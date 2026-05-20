@@ -94,18 +94,18 @@ function weeklyPicksEmailTemplate(email: string, picks: any[]) {
   const pickCards = picks
     .map(
       (pick) => `
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px; border: 1px solid #1f1f1f; border-radius: 12px; overflow: hidden;">
-      <tr>
+    <div class="pick-card" style="margin-bottom: 24px; border: 1px solid #1f1f1f; border-radius: 12px; overflow: hidden; background-color: #1a1a1a;">
+      <div class="pick-inner" style="display: flex; flex-direction: row;">
         ${
           pick.poster_url
             ? `
-        <td width="120" valign="top">
+        <div class="pick-poster" style="flex-shrink: 0; width: 320px;">
           <img src="${pick.poster_url}" alt="${pick.title}" width="120"
-            style="display: block; width: 120px; height: 160px; object-fit: cover;" />
-        </td>`
+            style="display: block; width: 120px; height: 100%; min-height: 160px; object-fit: cover;" />
+        </div>`
             : ""
         }
-        <td valign="top" style="padding: 16px; background-color: #1a1a1a;">
+        <div class="pick-body" style="padding: 16px; flex: 1; min-width: 0;">
           <p style="margin: 0 0 6px; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #E50914;">
             ${pick.genre ?? "Featured"}
           </p>
@@ -115,29 +115,23 @@ function weeklyPicksEmailTemplate(email: string, picks: any[]) {
           <p style="margin: 0 0 10px; font-size: 13px; color: #a3a3a3; line-height: 1.5;">
             ${pick.description ?? ""}
           </p>
-          <table cellpadding="0" cellspacing="0">
-            <tr>
-              <td style="background-color: #2a2a2a; border-radius: 6px; padding: 4px 10px; margin-right: 8px;">
-                <p style="margin: 0; font-size: 12px; font-weight: 700; color: #facc15;">
-                  ⭐ ${pick.imdb_rating} IMDb
-                </p>
-              </td>
-              ${
-                pick.netflix_url
-                  ? `
-              <td style="padding-left: 8px;">
-                <a href="${pick.netflix_url}"
-                  style="display: inline-block; background-color: #E50914; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 6px;">
-                  Watch on Netflix →
-                </a>
-              </td>`
-                  : ""
-              }
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+            <span style="background-color: #2a2a2a; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 700; color: #facc15;">
+              ⭐ ${pick.imdb_rating} IMDb
+            </span>
+            ${
+              pick.netflix_url
+                ? `
+            <a href="${pick.netflix_url}"
+              style="display: inline-block; background-color: #E50914; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 6px;">
+              Watch on Netflix →
+            </a>`
+                : ""
+            }
+          </div>
+        </div>
+      </div>
+    </div>
   `,
     )
     .join("");
@@ -148,6 +142,20 @@ function weeklyPicksEmailTemplate(email: string, picks: any[]) {
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <style>
+        @media (max-width: 600px) {
+          .pick-inner {
+            flex-direction: column !important;
+          }
+          .pick-poster img {
+            width: 320px !important;
+            height: 200px !important;
+          }
+          .pick-poster {
+            width: 100% !important;
+          }
+        }
+      </style>
     </head>
     <body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
       <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a; padding: 40px 16px;">
@@ -157,16 +165,24 @@ function weeklyPicksEmailTemplate(email: string, picks: any[]) {
 
               <!-- Header -->
               <tr>
-                <td style="background: linear-gradient(135deg, #1a0000 0%, #E50914 100%); padding: 40px;">
-                  <p style="margin: 0 0 8px; font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.6);">
-                    Weekly Newsletter
-                  </p>
-                  <h1 style="margin: 0; font-size: 28px; font-weight: 800; color: #ffffff; line-height: 1.2;">
-                    🎬 This Week's Top Picks
-                  </h1>
-                  <p style="margin: 8px 0 0; font-size: 14px; color: rgba(255,255,255,0.7);">
-                    ${new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
-                  </p>
+                <td style="background-color: #1b1f3b; padding: 40px;">
+                  <table width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="vertical-align: middle; padding-right: 20px;">
+                        <p style="margin: 0 0 8px; font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.75);">
+                          Weekly Newsletter
+                        </p>
+                        <h1 style="margin: 0; font-size: 28px; font-weight: 800; color: #ffffff; line-height: 1.2;">
+                          🎬 This Week's Top Picks
+                        </h1>
+                      </td>
+                      <td style="vertical-align: middle; text-align: right; white-space: nowrap;">
+                        <p style="margin: 0; font-size: 14px; color: rgba(255,255,255,0.7);">
+                          ${new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
                 </td>
               </tr>
 

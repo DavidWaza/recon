@@ -137,7 +137,7 @@ function DashboardHeader({
     },
     weekly: {
       title: "Weekly Picks",
-      subtitle: "Fresh curated movies — updated every Thursday",
+      subtitle: "Fresh curated movies — updated every Friday",
     },
     favorites: {
       title: "Favorites",
@@ -239,7 +239,7 @@ function SettingsPanel() {
       <div className="rounded-2xl border border-border bg-card p-6">
         <h3 className="font-semibold text-white">Email preferences</h3>
         <p className="mt-1 text-sm text-muted">
-          Receive weekly picks every Thursday at 9:00 AM
+          Receive weekly picks every Friday at 9:00 AM
         </p>
         <label className="mt-4 flex items-center gap-3">
           <input

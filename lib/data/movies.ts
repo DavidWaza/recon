@@ -1,170 +1,189 @@
 import type { Movie } from "@/lib/types";
 
-const TMDB = "https://image.tmdb.org/t/p/w500";
-const TMDB_BACKDROP = "https://image.tmdb.org/t/p/w1280";
-
-/** Build a wide hero backdrop from poster when no dedicated backdrop exists */
-function backdropFromPoster(posterUrl: string) {
-  const file = posterUrl.split("/").pop() ?? "";
-  return `${TMDB_BACKDROP}/${file}`;
-}
-
 export const movies: Movie[] = [
   {
     id: 1,
-    title: "Inception",
-    imdbRating: 8.8,
-    genre: ["Sci-Fi", "Thriller"],
+    title: "They Cloned Tyrone",
+    imdbRating: 6.6,
+    genre: ["Sci-Fi", "Comedy", "Mystery"],
     description:
-      "A thief who enters dreams to steal secrets faces his most dangerous job yet—planting an idea instead of stealing one.",
-    poster: `${TMDB}/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg`,
-    backdrop: `${TMDB_BACKDROP}/8ZTVqvKDQ8emSGUEMjsS4yHAwrp.jpg`,
+      "A drug dealer, a pimp, and a sex worker uncover a disturbing government cloning conspiracy in their neighborhood.",
+    poster:
+      "https://people.com/thmb/dotuMNV2QZp2Hr-gs0d5p0x_OFw=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(674x0:676x2)/they-cloned-tyrone-netflix-061323-8-2cee58119d8341ab8dcf5028489f8757.jpg",
+    backdrop:
+      "https://people.com/thmb/dotuMNV2QZp2Hr-gs0d5p0x_OFw=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(674x0:676x2)/they-cloned-tyrone-netflix-061323-8-2cee58119d8341ab8dcf5028489f8757.jpg",
     netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=YoHD9XEInc0",
-    watchUrl: "https://www.netflix.com",
-    year: 2010,
+    trailerUrl: "https://www.youtube.com/watch?v=2S3M1xFVd9s",
+    watchUrl: "https://www.netflix.com/title/80994082",
+    year: 2023,
     isNewThisWeek: true,
   },
   {
     id: 2,
-    title: "The Dark Knight",
-    imdbRating: 9.0,
-    genre: ["Action", "Crime"],
+    title: "Rebel Moon – Part One: A Child of Fire",
+    imdbRating: 5.6,
+    genre: ["Sci-Fi", "Action", "Adventure"],
     description:
-      "Batman faces the Joker, a criminal mastermind who plunges Gotham into anarchy and tests the hero's moral limits.",
-    poster: `${TMDB}/qJ2tW6WMUDux911r6m7haRef0WH.jpg`,
-    backdrop: backdropFromPoster(`${TMDB}/qJ2tW6WMUDux911r6m7haRef0WH.jpg`),
+      "A mysterious outsider rallies warriors from across the galaxy to defend a peaceful colony from an oppressive empire.",
+    poster:
+      "https://image.tmdb.org/t/p/w500/ui4DrH1cKk2vkHshcUcGt2lKxCm.jpg",
+    backdrop:
+      "https://image.tmdb.org/t/p/w1280/ui4DrH1cKk2vkHshcUcGt2lKxCm.jpg",
     netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=EXeTwQWrcwY",
-    watchUrl: "https://www.netflix.com",
-    year: 2008,
+    trailerUrl: "https://www.youtube.com/watch?v=_rHLOXbFZtI",
+    watchUrl: "https://www.netflix.com/title/81464239",
+    year: 2023,
     isNewThisWeek: true,
   },
   {
     id: 3,
-    title: "Parasite",
-    imdbRating: 8.5,
-    genre: ["Drama", "Thriller"],
+    title: "6 Underground",
+    imdbRating: 6.1,
+    genre: ["Action", "Thriller"],
     description:
-      "Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan.",
-    poster: `${TMDB}/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg`,
-    backdrop: backdropFromPoster(`${TMDB}/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg`),
+      "Six individuals fake their deaths and form a vigilante squad to take down dangerous criminals around the world.",
+    poster:
+      "https://image.tmdb.org/t/p/w500/lnWkyG3LLgbbrIEeyl5mK5VRFe4.jpg",
+    backdrop:
+      "https://image.tmdb.org/t/p/w1280/lnWkyG3LLgbbrIEeyl5mK5VRFe4.jpg",
     netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=5xH0HfJHsaY",
-    watchUrl: "https://www.netflix.com",
+    trailerUrl: "https://www.youtube.com/watch?v=YLE85olJjp8",
+    watchUrl: "https://www.netflix.com/title/81065331",
     year: 2019,
-    isNewThisWeek: true,
-  },
-  {
-    id: 4,
-    title: "Interstellar",
-    imdbRating: 8.7,
-    genre: ["Sci-Fi", "Adventure"],
-    description:
-      "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
-    poster: `${TMDB}/yQvGrMoipbRoddT0ZR8tPoR7NfX.jpg`,
-    backdrop: `${TMDB_BACKDROP}/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg`,
-    netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=zSWdZVtXT7E",
-    watchUrl: "https://www.netflix.com",
-    year: 2014,
     isNewThisWeek: false,
   },
   {
-    id: 5,
-    title: "Pulp Fiction",
-    imdbRating: 8.9,
-    genre: ["Crime", "Drama"],
+    id: 4,
+    title: "Extraction 2",
+    imdbRating: 7.0,
+    genre: ["Action", "Thriller"],
     description:
-      "The lives of two mob hitmen, a boxer, a gangster and his wife intertwine in four tales of violence and redemption.",
-    poster: `${TMDB}/vQWk5YBFWF4bZaofAbv0tShwBvQ.jpg`,
-    backdrop: backdropFromPoster(`${TMDB}/vQWk5YBFWF4bZaofAbv0tShwBvQ.jpg`),
+      "Tyler Rake returns from the brink of death for another deadly black-ops mission.",
+    poster:
+      "https://image.tmdb.org/t/p/w500/7gKI9hpEMcZUQpNgKrkDzJpbnNS.jpg",
+    backdrop:
+      "https://image.tmdb.org/t/p/w1280/7gKI9hpEMcZUQpNgKrkDzJpbnNS.jpg",
     netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=s7EdQ4FqbhY",
-    watchUrl: "https://www.netflix.com",
-    year: 1994,
+    trailerUrl: "https://www.youtube.com/watch?v=Y274jZs5s7s",
+    watchUrl: "https://www.netflix.com/title/81098494",
+    year: 2023,
+    isNewThisWeek: true,
+  },
+  {
+    id: 5,
+    title: "The Gray Man",
+    imdbRating: 6.5,
+    genre: ["Action", "Thriller"],
+    description:
+      "A skilled CIA operative uncovers agency secrets and becomes the target of a global manhunt.",
+    poster:
+      "https://image.tmdb.org/t/p/w500/8cXbitsS6dWQ5gfMTZdorpAAzEH.jpg",
+    backdrop:
+      "https://image.tmdb.org/t/p/w1280/8cXbitsS6dWQ5gfMTZdorpAAzEH.jpg",
+    netflixAvailable: true,
+    trailerUrl: "https://www.youtube.com/watch?v=BmllggGO4pM",
+    watchUrl: "https://www.netflix.com/title/81160697",
+    year: 2022,
     isNewThisWeek: false,
   },
   {
     id: 6,
-    title: "The Shawshank Redemption",
-    imdbRating: 9.3,
-    genre: ["Drama"],
+    title: "Red Notice",
+    imdbRating: 6.3,
+    genre: ["Action", "Comedy", "Crime"],
     description:
-      "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
-    poster: `${TMDB}/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg`,
-    backdrop: backdropFromPoster(`${TMDB}/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg`),
+      "An FBI profiler reluctantly teams up with a notorious art thief to catch the world’s most wanted criminal.",
+    poster:
+      "https://image.tmdb.org/t/p/w500/lAXONuqg41NwUMuzMiFvicDET9Y.jpg",
+    backdrop:
+      "https://image.tmdb.org/t/p/w1280/lAXONuqg41NwUMuzMiFvicDET9Y.jpg",
     netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=NmzuHssWmSE",
-    watchUrl: "https://www.netflix.com",
-    year: 1994,
+    trailerUrl: "https://www.youtube.com/watch?v=Pj0wz7zu3Ms",
+    watchUrl: "https://www.netflix.com/title/81161626",
+    year: 2021,
     isNewThisWeek: false,
   },
   {
     id: 7,
-    title: "Whiplash",
-    imdbRating: 8.5,
-    genre: ["Drama", "Music"],
+    title: "Army of the Dead",
+    imdbRating: 5.8,
+    genre: ["Action", "Horror", "Sci-Fi"],
     description:
-      "A promising young drummer enrolls at a cut-throat music conservatory where his dreams are mentored by an instructor who will stop at nothing.",
-    poster: `${TMDB}/3E53WEZJqP6aM84D8CckXx4pIHw.jpg`,
+      "A group of mercenaries ventures into zombie-infested Las Vegas for the heist of a lifetime.",
+    poster:
+      "https://image.tmdb.org/t/p/w500/z8CExJekGrEThbpMXAmCFvvgoJR.jpg",
+    backdrop:
+      "https://image.tmdb.org/t/p/w1280/z8CExJekGrEThbpMXAmCFvvgoJR.jpg",
     netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=7d_jQycdQGo",
-    watchUrl: "https://www.netflix.com",
-    year: 2014,
-    isNewThisWeek: true,
+    trailerUrl: "https://www.youtube.com/watch?v=tI1JGPhYBS8",
+    watchUrl: "https://www.netflix.com/title/81115346",
+    year: 2021,
+    isNewThisWeek: false,
   },
   {
     id: 8,
-    title: "The Social Network",
-    imdbRating: 7.8,
-    genre: ["Drama", "Biography"],
+    title: "Bird Box",
+    imdbRating: 6.6,
+    genre: ["Thriller", "Horror", "Drama"],
     description:
-      "As Harvard student Mark Zuckerberg creates the social networking site that would become Facebook, he is sued by the twins who claimed he stole their idea.",
-    poster: `${TMDB}/n0ybibhJtQ5icDqTp8eRytcIHJx.jpg`,
+      "A mother and her children must survive a mysterious force that drives people to deadly violence if seen.",
+    poster:
+      "https://image.tmdb.org/t/p/w500/rGfGfgL2pEPCfhIvqHXieXFn7gp.jpg",
+    backdrop:
+      "https://image.tmdb.org/t/p/w1280/rGfGfgL2pEPCfhIvqHXieXFn7gp.jpg",
     netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=lB95KLmpLR4",
-    watchUrl: "https://www.netflix.com",
-    year: 2010,
+    trailerUrl: "https://www.youtube.com/watch?v=o2AsIXSh2xo",
+    watchUrl: "https://www.netflix.com/title/80196789",
+    year: 2018,
     isNewThisWeek: false,
   },
   {
     id: 9,
-    title: "Knives Out",
-    imdbRating: 7.9,
-    genre: ["Mystery", "Comedy"],
+    title: "Project Power",
+    imdbRating: 6.0,
+    genre: ["Action", "Sci-Fi", "Crime"],
     description:
-      "A detective investigates the death of a patriarch of an eccentric, combative family.",
-    poster: `${TMDB}/pThyQovXQrw2m0s9x82twj48Jq4.jpg`,
+      "A former soldier teams up with a cop to stop a dangerous drug that grants temporary superpowers.",
+    poster:
+      "https://image.tmdb.org/t/p/w500/TnOeov4w0sTtV2gqICqIxVi74V.jpg",
+    backdrop:
+      "https://image.tmdb.org/t/p/w1280/riiApN308iGy9hSWHXK1NClITsW.jpg",
     netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=qGqiHJTsRyk",
-    watchUrl: "https://www.netflix.com",
-    year: 2019,
-    isNewThisWeek: true,
+    trailerUrl: "https://www.youtube.com/watch?v=xw1vQgVaYNQ",
+    watchUrl: "https://www.netflix.com/title/80204465",
+    year: 2020,
+    isNewThisWeek: false,
   },
   {
     id: 10,
-    title: "Arrival",
-    imdbRating: 7.9,
+    title: "Spaceman",
+    imdbRating: 5.8,
     genre: ["Sci-Fi", "Drama"],
     description:
-      "A linguist works with the military to communicate with alien lifeforms after twelve mysterious spacecraft appear around the world.",
-    poster: `${TMDB}/279PwJAcelI4VuBtdzrZASqDPQr.jpg`,
+      "An astronaut on a lonely mission encounters a mysterious creature that helps him confront his failing marriage.",
+    poster:
+      "https://image.tmdb.org/t/p/w500/f46WvKEsBn98WJbPJcO47ZoKn6B.jpg",
+    backdrop:
+      "https://image.tmdb.org/t/p/w1280/oBIQDKcqNxKckjugtmzpIIOgoc4.jpg",
     netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=tFMo3LJ8B4g",
-    watchUrl: "https://www.netflix.com",
-    year: 2016,
-    isNewThisWeek: false,
+    trailerUrl: "https://www.youtube.com/watch?v=rNZ0xKaCdus",
+    watchUrl: "https://www.netflix.com/title/81350656",
+    year: 2024,
+    isNewThisWeek: true,
   },
 ];
 
 export const weeklyPicks = movies.filter((m) => m.isNewThisWeek);
+
 export const trendingPicks = [...movies].sort(
   (a, b) => b.imdbRating - a.imdbRating
 );
+
 export const previewMovies = movies.slice(0, 8);
+
 export const heroPreviewMovies = movies.slice(0, 3);
-/** Full-bleed hero carousel (StreamVid-style backdrop slides) */
+
+/** Full-bleed hero carousel */
 export const heroCarouselMovies = movies.slice(0, 6);
 
 export const allGenres = Array.from(

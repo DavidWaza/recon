@@ -3,9 +3,17 @@
 import { useState } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { HeroSection, HeroPreviewSection } from "@/components/layout/HeroSection";
-import { heroCarouselMovies, heroPreviewMovies } from "@/lib/data/movies";
+import type { Movie } from "@/lib/types";
 
-export function LandingPage() {
+type LandingPageProps = {
+  heroCarouselMovies?: Movie[];
+  heroPreviewMovies?: Movie[];
+};
+
+export function LandingPage({
+  heroCarouselMovies = [],
+  heroPreviewMovies = [],
+}: LandingPageProps) {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 

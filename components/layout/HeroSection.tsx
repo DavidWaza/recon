@@ -11,6 +11,7 @@ import { RatingBadge } from "@/components/movie/RatingBadge";
 import { GenreTag } from "@/components/movie/GenreTag";
 import { subscribeUser } from "@/services/subscribe";
 import axios from "axios";
+import { WaitlistForm } from "../email/WaitlistForm";
 
 const SLIDE_INTERVAL_MS = 6000;
 
@@ -94,17 +95,24 @@ export function HeroSection({
     e.preventDefault();
     setLoading(true);
     setSubmitError(null);
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setLoading(false);
+      setSubmitError("Please enter a valid email address");
+      return;
+    }
+
     try {
       await subscribeUser(email);
       toast.success("Subscribed! Check your email for updates.");
       onSubmit(e);
     } catch (err) {
       const errorMessage = axios.isAxiosError(err)
-        ? err.response?.data?.error ?? "Something went wrong"
+        ? (err.response?.data?.error ?? "Something went wrong")
         : "Something went wrong";
       setSubmitError(errorMessage);
       toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -170,16 +178,26 @@ export function HeroSection({
       />
 
       {/* Content — left-aligned like StreamVid Home 7 */}
-      <div className="relative z-10 mx-auto flex min-h-[calc(92vh-4rem)] max-w-7xl flex-col justify-end px-6 pb-28 pt-8 lg:justify-center lg:pb-20">
+      <div className="relative z-10 mx-auto flex min-h-[calc(92vh-4rem)] mt-10 max-w-7xl flex-col justify-end px-6 pb-28 pt-8 lg:justify-center lg:pb-20">
         <div className="grid items-end gap-10 lg:grid-cols-[1fr_auto] lg:items-center">
           <div className="max-w-2xl">
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-3 text-sm font-medium uppercase tracking-widest text-accent"
+              className="mb-3 inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-sm font-semibold uppercase tracking-widest text-white ring-1 ring-accent/20 shadow-sm"
             >
-              New picks every Thursday
+              New picks every Friday
             </motion.p>
+            <div className="flex items-center gap-3 text-sm font-medium text-muted my-5 uppercase">
+              <p>Only on</p>
+              <Image
+                src="/netflix-logo.png"
+                alt="Netflix logo"
+                width={80}
+                height={24}
+                className="object-contain"
+              />
+            </div>
 
             <AnimatePresence mode="wait">
               <motion.div
@@ -235,12 +253,15 @@ export function HeroSection({
             </AnimatePresence>
 
             {/* Newsletter CTA */}
-            <div className="mt-10 border-t border-border pt-8">
+            {/* <div className="mt-10 border-t border-border pt-8">
               <p className="text-lg font-semibold text-white sm:text-xl">
-                Discover high-rated movies every Thursday
+                Discover high-rated movies every Friday
               </p>
               <p className="mt-1 text-sm text-muted">
                 Curated Netflix picks rated on IMDb — free weekly newsletter.
+              </p>
+              <p className="mt-1 text-xs italic text-muted/80">
+                Disclaimer: Available for Netflix users only.
               </p>
 
               <form
@@ -254,21 +275,31 @@ export function HeroSection({
                   onChange={(e) => onEmailChange(e.target.value)}
                   placeholder="you@email.com"
                   disabled={loading}
-                  className="flex-1 rounded-xl border border-border bg-black/40 px-4 py-3.5 text-white placeholder:text-muted backdrop-blur-md focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  className="flex-1 rounded-full border border-border bg-black/40 px-4 py-3.5 text-white placeholder:text-muted backdrop-blur-md focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
                 />
-                <CTAButton type="submit" size="md">
+                <CTAButton type="submit" size="md" loading={loading}>
                   Get Weekly Picks
                 </CTAButton>
               </form>
 
               {submitted && (
                 <p className="mt-3 text-sm text-success">
-                  You&apos;re on the list! Check your inbox this Thursday.
+                  You&apos;re on the list! Check your inbox this Friday.
                 </p>
               )}
+            </div> */}
+
+            {/* Join the Waitlist */}
+            <div className="mt-10 border-t border-border pt-8 space-y-3.5">
+              <p className="text-lg font-semibold text-white sm:text-xl">
+                Join the waitlist for Recon
+              </p>
+              <p className="mt-1 text-sm text-muted">
+                Get early access to personalized movie recommendations and more.
+              </p>
+              <WaitlistForm />
             </div>
           </div>
-
           {/* Poster thumbnail picker (right on desktop) */}
           {slideCount > 1 && (
             <div className="hidden flex-col gap-2 lg:flex">
@@ -410,7 +441,8 @@ export function HeroPreviewSection({ movies }: { movies: Movie[] }) {
             This week's preview
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted sm:text-lg">
-            A premium sneak peek of the Netflix movies that land in your inbox every Thursday.
+            A premium sneak peek of the Netflix movies that land in your inbox
+            every Friday.
           </p>
         </div>
 
@@ -442,7 +474,9 @@ export function HeroPreviewSection({ movies }: { movies: Movie[] }) {
 
                 <div className="space-y-3 p-5">
                   <div className="flex items-center justify-between gap-3">
-                    <h3 className="text-lg font-semibold text-white">{movie.title}</h3>
+                    <h3 className="text-lg font-semibold text-white">
+                      {movie.title}
+                    </h3>
                     <div className="rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-accent ring-1 ring-accent/20">
                       {movie.imdbRating}
                     </div>

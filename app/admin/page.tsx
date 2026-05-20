@@ -1,13 +1,48 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+
+const GENRE_OPTIONS = [
+  "Action",
+  "Adventure",
+  "Comedy",
+  "Drama",
+  "Horror",
+  "Sci-Fi",
+  "Thriller",
+  "Mystery",
+  'Physchological Thriller',
+  "Mind Bending",
+  "Dark Comedy",
+  "Crime",
+  "Fantasy",
+  "Romance",
+  "Documentary",
+];
+
+const IMDB_OPTIONS = [
+  "9.5",
+  "9.0",
+  "8.5",
+  "8.0",
+  "7.5",
+  "7.0",
+  "6.5",
+  "6.0",
+  "5.5",
+  "5.0",
+  "4.5",
+  "4.0",
+];
+
+const PERSIST_KEY = "recon-admin-picks";
 
 const EMPTY_PICK = {
   title: "",
   description: "",
-  genre: "",
-  imdb_rating: "",
+  genre: "Action",
+  imdb_rating: "8.0",
   poster_url: "",
   trailer_url: "",
   netflix_url: "",
@@ -33,6 +68,25 @@ export default function AdminPage() {
   const removePick = (index: number) =>
     setPicks((prev) => prev.filter((_, i) => i !== index));
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const stored = window.localStorage.getItem(PERSIST_KEY);
+      if (!stored) return;
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        setPicks(parsed);
+      }
+    } catch (error) {
+      console.warn("Failed to restore admin picks:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(PERSIST_KEY, JSON.stringify(picks));
+  }, [picks]);
+
   const handleSend = async () => {
     setLoading(true);
     setResult(null);
@@ -52,6 +106,9 @@ export default function AdminPage() {
         },
       );
       setResult(data);
+      if (data.success) {
+        setPicks([{ ...EMPTY_PICK }]);
+      }
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setResult({
@@ -88,28 +145,130 @@ export default function AdminPage() {
                   </button>
                 )}
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { field: "title", label: "Title", span: true },
-                  { field: "description", label: "Description", span: true },
-                  { field: "genre", label: "Genre" },
-                  { field: "imdb_rating", label: "IMDb Rating" },
-                  { field: "poster_url", label: "Poster URL", span: true },
-                  { field: "trailer_url", label: "Trailer URL", span: true },
-                  { field: "netflix_url", label: "Netflix URL", span: true },
-                ].map(({ field, label, span }) => (
-                  <div key={field} className={span ? "col-span-2" : ""}>
-                    <label className="block text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider mb-1">
-                      {label}
+              <div className="grid gap-4">
+                <div className="grid gap-4 lg:grid-cols-[1.4fr_0.6fr]">
+                  <div className="space-y-2">
+                    <label className="block text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider">
+                      Title
                     </label>
                     <input
                       type="text"
-                      value={pick[field as keyof typeof EMPTY_PICK]}
-                      onChange={(e) => updatePick(i, field, e.target.value)}
-                      className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20"
+                      value={pick.title}
+                      onChange={(e) => updatePick(i, "title", e.target.value)}
+                      placeholder="Movie title"
+                      className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20"
                     />
                   </div>
-                ))}
+
+                  <div className="space-y-2">
+                    <label className="block text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider">
+                      IMDb Rating
+                    </label>
+                    <select
+                      value={pick.imdb_rating}
+                      onChange={(e) => updatePick(i, "imdb_rating", e.target.value)}
+                      className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20"
+                    >
+                      {IMDB_OPTIONS.map((value) => (
+                        <option key={value} value={value} className="bg-[#0f0f0f] text-white">
+                          {value}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider">
+                    Description
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={pick.description}
+                    onChange={(e) => updatePick(i, "description", e.target.value)}
+                    placeholder="A concise overview of the pick, styled for the newsletter."
+                    className="w-full resize-none bg-[#0f0f0f] border border-[#2a2a2a] rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20"
+                  />
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="block text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider">
+                      Genres
+                    </label>
+                    <select
+                      multiple
+                      value={pick.genre.split(",").map((value) => value.trim()).filter(Boolean)}
+                      onChange={(e) => {
+                        const selectedGenres = Array.from(e.target.selectedOptions).map((option) => option.value);
+                        updatePick(i, "genre", selectedGenres.join(", "));
+                      }}
+                      className="h-32 w-full min-h-32 bg-[#0f0f0f] border border-[#2a2a2a] rounded-2xl px-3 py-3 text-white text-sm focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20"
+                    >
+                      {GENRE_OPTIONS.map((genre) => (
+                        <option key={genre} value={genre} className="bg-[#0f0f0f] text-white">
+                          {genre}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-[11px] text-[#7a7a7a]">Use Ctrl/Cmd+click to select multiple genres.</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {pick.genre
+                        .split(",")
+                        .map((value) => value.trim())
+                        .filter(Boolean)
+                        .map((genre) => (
+                          <span
+                            key={genre}
+                            className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-[11px] text-white ring-1 ring-white/10"
+                          >
+                            {genre}
+                          </span>
+                        ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider">
+                      Trailer URL
+                    </label>
+                    <input
+                      type="text"
+                      value={pick.trailer_url}
+                      onChange={(e) => updatePick(i, "trailer_url", e.target.value)}
+                      placeholder="YouTube trailer link"
+                      className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="block text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider">
+                      Poster URL
+                    </label>
+                    <input
+                      type="text"
+                      value={pick.poster_url}
+                      onChange={(e) => updatePick(i, "poster_url", e.target.value)}
+                      placeholder="Cover image link"
+                      className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider">
+                      Netflix URL
+                    </label>
+                    <input
+                      type="text"
+                      value={pick.netflix_url}
+                      onChange={(e) => updatePick(i, "netflix_url", e.target.value)}
+                      placeholder="Netflix watch link"
+                      className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           ))}

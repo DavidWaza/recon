@@ -28,7 +28,7 @@ export async function POST(req: Request) {
   const { error: emailError } = await resend.emails.send({
     from: "Recon Movie Picks <onboarding@resend.dev>",
     to: email,
-    subject: "🎬 You're on the list — first picks land Thursday!",
+    subject: "🎬 You're on the list — first picks land Friday!",
     html: `
   <!DOCTYPE html>
   <html lang="en">
@@ -50,7 +50,7 @@ export async function POST(req: Request) {
                   Weekly Newsletter
                 </p>
                 <h1 style="margin: 0; font-size: 32px; font-weight: 800; color: #ffffff; line-height: 1.2; letter-spacing: -0.5px;">
-                  🎬 Your Thursday<br/>Movie Picks
+                  🎬 Your Friday<br/>Movie Picks
                 </h1>
               </td>
             </tr>
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
                   You're officially on the list.
                 </h2>
                 <p style="margin: 0 0 32px; font-size: 15px; line-height: 1.7; color: #a3a3a3;">
-                  Hey <strong style="color: #ffffff;">${email}</strong>, welcome aboard. Every Thursday we hand-pick the highest-rated movies on Netflix so you never waste time scrolling again.
+                  Hey <strong style="color: #ffffff;">${email}</strong>, welcome aboard. Every Friday we hand-pick the highest-rated movies on Netflix so you never waste time scrolling again.
                 </p>
 
                 <!-- Divider -->
@@ -85,7 +85,7 @@ export async function POST(req: Request) {
                     </td>
                     <td style="padding-left: 16px;" valign="top">
                       <p style="margin: 0 0 4px; font-size: 14px; font-weight: 600; color: #ffffff;">Top-rated picks only</p>
-                      <p style="margin: 0; font-size: 13px; color: #a3a3a3; line-height: 1.5;">Only movies rated 7.5+ on IMDb make the cut.</p>
+                      <p style="margin: 0; font-size: 13px; color: #a3a3a3; line-height: 1.5;">Only movies rated 7.0+ on IMDb make the cut.</p>
                     </td>
                   </tr>
                 </table>
@@ -99,7 +99,7 @@ export async function POST(req: Request) {
                       </div>
                     </td>
                     <td style="padding-left: 16px;" valign="top">
-                      <p style="margin: 0 0 4px; font-size: 14px; font-weight: 600; color: #ffffff;">Every Thursday, no spam</p>
+                      <p style="margin: 0 0 4px; font-size: 14px; font-weight: 600; color: #ffffff;">Every Friday, no spam</p>
                       <p style="margin: 0; font-size: 13px; color: #a3a3a3; line-height: 1.5;">One email a week. That's it. Unsubscribe anytime.</p>
                     </td>
                   </tr>
@@ -124,7 +124,7 @@ export async function POST(req: Request) {
                 <table width="100%" cellpadding="0" cellspacing="0">
                   <tr>
                     <td align="center">
-                      <a href="https://yoursite.com/dashboard"
+                      <a href="https://recon-ruby.vercel.app"
                         style="display: inline-block; background-color: #E50914; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 700; padding: 14px 36px; border-radius: 8px; letter-spacing: 0.3px;">
                         Browse This Week's Picks →
                       </a>

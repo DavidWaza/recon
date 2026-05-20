@@ -12,7 +12,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Recon — Weekly High-Rated Movie Picks",
   description:
-    "Curated Netflix movies rated 7.0+ on IMDb, delivered every Thursday.",
+    "Curated Netflix movies rated 7.0+ on IMDb, delivered every Friday.",
 };
 
 export default function RootLayout({
