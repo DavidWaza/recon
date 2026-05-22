@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { resend } from "@/lib/resend";
+import { transporter } from "@/lib/nodemailer";
 
 export async function POST(req: Request) {
   // Protect the route with a secret key
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
   const senderEmail =
     process.env.RESEND_FROM_EMAIL ?? "moviereconn@gmail.com";
 
-  // 3. Send emails in batches of 50 (Resend rate limit)
+  // 3. Send emails in batches (nodemailer rate limit)
   const BATCH_SIZE = 50;
   let totalSent = 0;
   let totalFailed = 0;
@@ -56,12 +56,12 @@ export async function POST(req: Request) {
     const batch = subscribers.slice(i, i + BATCH_SIZE);
 
     const emailPromises = batch.map(({ email }) =>
-      resend.emails.send({
+      transporter.sendMail({
         from: `recon <${senderEmail}>`,
         to: email,
         subject: `🎬 This week's top Netflix picks are here!`,
         html: weeklyPicksEmailTemplate(email, picks),
-      }),
+      })
     );
 
     const results = await Promise.allSettled(emailPromises);

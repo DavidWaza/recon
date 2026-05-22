@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { resend } from "@/lib/resend";
+import { transporter } from "@/lib/nodemailer";
 
 export async function POST(req: Request) {
   const { email } = await req.json();
@@ -32,15 +32,15 @@ export async function POST(req: Request) {
     .lte("created_at", data.created_at);
 
   // Send confirmation email
-  const { error: emailError } = await resend.emails.send({
-    from: "recon <moviereconn@gmail.com>",
-    to: email,
-    subject: "🎬 You're on the waitlist!",
-    html: waitlistEmailTemplate( email, count ?? 1),
-  });
-
-  if (emailError) {
-    console.error("Resend error:", emailError);
+  try {
+    await transporter.sendMail({
+      from: "recon <moviereconn@gmail.com>",
+      to: email,
+      subject: "🎬 You're on the waitlist!",
+      html: waitlistEmailTemplate(email, count ?? 1),
+    });
+  } catch (emailError) {
+    console.error("Email error:", emailError);
   }
 
   return NextResponse.json({

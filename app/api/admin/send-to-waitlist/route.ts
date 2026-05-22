@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { resend } from "@/lib/resend";
+import { transporter } from "@/lib/nodemailer";
 
 interface SendToWaitlistRequest {
   subject: string;
@@ -91,23 +91,15 @@ export async function POST(req: Request) {
       const batch = allUsers.slice(i, i + batchSize);
 
       const emailPromises = batch.map((user) =>
-        resend.emails
-          .send({
+        transporter
+          .sendMail({
             from: "recon <moviereconn@gmail.com>",
             to: user.email,
             subject: subject,
             html: generateEmailHTML(message, isWeeklyRecommendation),
           })
-          .then((result) => {
-            if (!result.error) {
-              sent++;
-            } else {
-              failed++;
-              console.error(
-                `Failed to send email to ${user.email}:`,
-                result.error
-              );
-            }
+          .then(() => {
+            sent++;
           })
           .catch((error) => {
             failed++;

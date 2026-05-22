@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { resend } from "@/lib/resend";
+import { transporter } from "@/lib/nodemailer";
 
 export async function POST(req: Request) {
   const { email } = await req.json();
@@ -25,11 +25,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const { error: emailError } = await resend.emails.send({
-    from: "Recon recon <moviereconn@gmail.com>",
-    to: email,
-    subject: "🎬 You're on the list — first picks land Friday!",
-    html: `
+  try {
+    await transporter.sendMail({
+      from: "Recon recon <moviereconn@gmail.com>",
+      to: email,
+      subject: "🎬 You're on the list — first picks land Friday!",
+      html: `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -156,10 +157,9 @@ export async function POST(req: Request) {
   </body>
   </html>
 `,
-  });
-
-  if (emailError) {
-    console.error("Resend error:", emailError);
+    });
+  } catch (emailError) {
+    console.error("Email error:", emailError);
     return NextResponse.json({ success: true, emailSent: false, data });
   }
 
