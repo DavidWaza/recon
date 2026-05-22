@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { transporter } from "@/lib/nodemailer";
+import { getTransporter } from "@/lib/nodemailer";
 
 interface SendToWaitlistRequest {
   subject: string;
@@ -91,7 +91,7 @@ export async function POST(req: Request) {
       const batch = allUsers.slice(i, i + batchSize);
 
       const emailPromises = batch.map((user) =>
-        transporter
+        getTransporter()
           .sendMail({
             from: "recon <moviereconn@gmail.com>",
             to: user.email,

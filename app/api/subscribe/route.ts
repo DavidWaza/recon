@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { transporter } from "@/lib/nodemailer";
+import { getTransporter } from "@/lib/nodemailer";
 
 export async function POST(req: Request) {
   const { email } = await req.json();
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    await transporter.sendMail({
+    await getTransporter().sendMail({
       from: "recon <moviereconn@gmail.com>",
       to: email,
       subject: "🎬 You're on the list — first picks land Friday!",

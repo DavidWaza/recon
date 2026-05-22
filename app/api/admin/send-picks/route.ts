@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { transporter } from "@/lib/nodemailer";
+import { getTransporter } from "@/lib/nodemailer";
 
 export async function POST(req: Request) {
   // Protect the route with a secret key
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
     const batch = subscribers.slice(i, i + BATCH_SIZE);
 
     const emailPromises = batch.map(({ email }) =>
-      transporter.sendMail({
+      getTransporter().sendMail({
         from: `recon <${senderEmail}>`,
         to: email,
         subject: `🎬 This week's top Netflix picks are here!`,
