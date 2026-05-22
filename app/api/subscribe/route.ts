@@ -26,7 +26,7 @@ export async function POST(req: Request) {
   }
 
   const { error: emailError } = await resend.emails.send({
-    from: "Recon recon <onboarding@resend.dev>",
+    from: "Recon recon <moviereconn@gmail.com>",
     to: email,
     subject: "🎬 You're on the list — first picks land Friday!",
     html: `

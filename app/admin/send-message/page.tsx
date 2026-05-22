@@ -93,10 +93,10 @@ export default function SendWaitlistMessagePage() {
                       🎬 ${isWeeklyRecommendation ? "This Week's Picks" : "recon"}
                     </h1>
                     <p style="margin: 12px 0 0; font-size: 16px; color: rgba(255,255,255,0.85); font-weight: 400;">
-                      ${isWeeklyRecommendation ? "Your curated weekly selections" : "Handpicked for you"}
+                      ${isWeeklyRecommendation ? "Your curated weekly selections" : ""}
                     </p>
                   </td>
-                </tr>
+                </tr
 
                 <!-- Body -->
                 <tr>

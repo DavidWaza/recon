@@ -45,7 +45,7 @@ export async function POST(req: Request) {
   }
 
   const senderEmail =
-    process.env.RESEND_FROM_EMAIL ?? "onboarding@resend.dev";
+    process.env.RESEND_FROM_EMAIL ?? "moviereconn@gmail.com";
 
   // 3. Send emails in batches of 50 (Resend rate limit)
   const BATCH_SIZE = 50;

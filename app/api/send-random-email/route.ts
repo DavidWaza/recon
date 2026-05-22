@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
   // Send confirmation email
   const { error: emailError } = await resend.emails.send({
-    from: "recon <onboarding@resend.dev>",
+    from: "recon <moviereconn@gmail.com>",
     to: email,
     subject: "🎬 You're on the waitlist!",
     html: waitlistEmailTemplate( email, count ?? 1),
