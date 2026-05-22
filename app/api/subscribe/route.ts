@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
   try {
     await transporter.sendMail({
-      from: "Recon recon <moviereconn@gmail.com>",
+      from: "recon <moviereconn@gmail.com>",
       to: email,
       subject: "🎬 You're on the list — first picks land Friday!",
       html: `
@@ -37,97 +37,100 @@ export async function POST(req: Request) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Weekly recon</title>
+    <style>
+      @media only screen and (max-width: 600px) {
+        .container { width: 100% !important; }
+        h1 { font-size: 28px !important; }
+        .features { width: 100% !important; }
+      }
+    </style>
   </head>
-  <body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a; padding: 40px 16px;">
+  <body style="margin: 0; padding: 0; background-color: #f5f5f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 32px 16px;">
       <tr>
         <td align="center">
-          <table width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; border-radius: 16px; overflow: hidden; border: 1px solid #1f1f1f;">
+          <table class="container" width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.07); background-color: #ffffff;">
 
             <!-- Header -->
             <tr>
-              <td style="background: linear-gradient(135deg, #1a0000 0%, #E50914 100%); padding: 40px 40px 32px;">
-                <p style="margin: 0 0 16px; font-size: 13px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.6);">
-                  Weekly Newsletter
-                </p>
-                <h1 style="margin: 0; font-size: 32px; font-weight: 800; color: #ffffff; line-height: 1.2; letter-spacing: -0.5px;">
-                  🎬 Your Friday<br/>recon
+              <td style="background-color: #1b1f3b; padding: 48px 40px; text-align: center;">
+                <h1 style="margin: 0; font-size: 32px; font-weight: 700; color: #ffffff; line-height: 1.2; letter-spacing: -0.5px;">
+                  🎬 Welcome to recon
                 </h1>
+                <p style="margin: 12px 0 0; font-size: 16px; color: rgba(255,255,255,0.85); font-weight: 400;">
+                  Your Friday movie picks await
+                </p>
               </td>
             </tr>
 
             <!-- Body -->
             <tr>
-              <td style="background-color: #141414; padding: 40px;">
+              <td style="background-color: #ffffff; padding: 48px 40px;">
 
                 <!-- Greeting -->
-                <h2 style="margin: 0 0 12px; font-size: 22px; font-weight: 700; color: #ffffff;">
-                  You're officially on the list.
-                </h2>
-                <p style="margin: 0 0 32px; font-size: 15px; line-height: 1.7; color: #a3a3a3;">
-                  Hey <strong style="color: #ffffff;">${email}</strong>, welcome aboard. Every Friday we hand-pick the highest-rated movies on Netflix so you never waste time scrolling again.
+                <p style="margin: 0 0 24px; font-size: 16px; color: #1a1a1a; line-height: 1.6;">
+                  Hi ${email},
+                </p>
+                <p style="margin: 0 0 32px; font-size: 15px; color: #4a4a4a; line-height: 1.8;">
+                  Welcome aboard! You're officially on our list. Every Friday we hand-pick the highest-rated movies on Netflix so you never waste time scrolling again.
                 </p>
 
-                <!-- Divider -->
-                <hr style="border: none; border-top: 1px solid #2a2a2a; margin: 0 0 32px;" />
-
                 <!-- What to expect -->
-                <p style="margin: 0 0 16px; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #E50914;">
+                <p style="margin: 0 0 24px; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #1b1f3b;">
                   What to expect
                 </p>
 
                 <!-- Feature 1 -->
-                <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 16px;">
+                <table width="100%" cellpadding="0" cellspacing="0" class="features" style="margin-bottom: 24px;">
                   <tr>
                     <td width="48" valign="top">
-                      <div style="width: 40px; height: 40px; background-color: #1f1f1f; border-radius: 10px; text-align: center; line-height: 40px; font-size: 18px;">
+                      <div style="width: 40px; height: 40px; background-color: #f0f2f5; border-radius: 10px; text-align: center; line-height: 40px; font-size: 18px;">
                         ⭐
                       </div>
                     </td>
                     <td style="padding-left: 16px;" valign="top">
-                      <p style="margin: 0 0 4px; font-size: 14px; font-weight: 600; color: #ffffff;">Top-rated picks only</p>
-                      <p style="margin: 0; font-size: 13px; color: #a3a3a3; line-height: 1.5;">Only movies rated 7.0+ on IMDb make the cut.</p>
+                      <p style="margin: 0 0 4px; font-size: 14px; font-weight: 600; color: #1a1a1a;">Top-rated picks only</p>
+                      <p style="margin: 0; font-size: 13px; color: #666666; line-height: 1.5;">Only movies rated 7.0+ on IMDb make the cut.</p>
                     </td>
                   </tr>
                 </table>
 
                 <!-- Feature 2 -->
-                <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 16px;">
+                <table width="100%" cellpadding="0" cellspacing="0" class="features" style="margin-bottom: 24px;">
                   <tr>
                     <td width="48" valign="top">
-                      <div style="width: 40px; height: 40px; background-color: #1f1f1f; border-radius: 10px; text-align: center; line-height: 40px; font-size: 18px;">
+                      <div style="width: 40px; height: 40px; background-color: #f0f2f5; border-radius: 10px; text-align: center; line-height: 40px; font-size: 18px;">
                         📅
                       </div>
                     </td>
                     <td style="padding-left: 16px;" valign="top">
-                      <p style="margin: 0 0 4px; font-size: 14px; font-weight: 600; color: #ffffff;">Every Friday, no spam</p>
-                      <p style="margin: 0; font-size: 13px; color: #a3a3a3; line-height: 1.5;">One email a week. That's it. Unsubscribe anytime.</p>
+                      <p style="margin: 0 0 4px; font-size: 14px; font-weight: 600; color: #1a1a1a;">Every Friday, no spam</p>
+                      <p style="margin: 0; font-size: 13px; color: #666666; line-height: 1.5;">One email a week. That's it. Unsubscribe anytime.</p>
                     </td>
                   </tr>
                 </table>
 
                 <!-- Feature 3 -->
-                <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 32px;">
+                <table width="100%" cellpadding="0" cellspacing="0" class="features" style="margin-bottom: 36px;">
                   <tr>
                     <td width="48" valign="top">
-                      <div style="width: 40px; height: 40px; background-color: #1f1f1f; border-radius: 10px; text-align: center; line-height: 40px; font-size: 18px;">
+                      <div style="width: 40px; height: 40px; background-color: #f0f2f5; border-radius: 10px; text-align: center; line-height: 40px; font-size: 18px;">
                         🎯
                       </div>
                     </td>
                     <td style="padding-left: 16px;" valign="top">
-                      <p style="margin: 0 0 4px; font-size: 14px; font-weight: 600; color: #ffffff;">Curated, not algorithmic</p>
-                      <p style="margin: 0; font-size: 13px; color: #a3a3a3; line-height: 1.5;">Human-reviewed so every pick is worth your time.</p>
+                      <p style="margin: 0 0 4px; font-size: 14px; font-weight: 600; color: #1a1a1a;">Curated, not algorithmic</p>
+                      <p style="margin: 0; font-size: 13px; color: #666666; line-height: 1.5;">Human-reviewed so every pick is worth your time.</p>
                     </td>
                   </tr>
                 </table>
 
                 <!-- CTA Button -->
-                <table width="100%" cellpadding="0" cellspacing="0">
+                <table width="100%" cellpadding="0" cellspacing="0" style="margin: 40px 0;">
                   <tr>
                     <td align="center">
-                      <a href="https://recon-ruby.vercel.app"
-                        style="display: inline-block; background-color: #E50914; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 700; padding: 14px 36px; border-radius: 8px; letter-spacing: 0.3px;">
-                        Browse This Week's Picks →
+                      <a href="https://recon.com.ng" style="display: inline-block; background-color: #1b1f3b; color: #ffffff; padding: 14px 36px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 15px; letter-spacing: 0.3px; box-shadow: 0 4px 12px rgba(27,31,59,0.3);">
+                        Browse This Week's Picks
                       </a>
                     </td>
                   </tr>
@@ -138,14 +141,12 @@ export async function POST(req: Request) {
 
             <!-- Footer -->
             <tr>
-              <td style="background-color: #0f0f0f; padding: 24px 40px; border-top: 1px solid #1f1f1f;">
-                <p style="margin: 0 0 8px; font-size: 12px; color: #4a4a4a; text-align: center; line-height: 1.6;">
-                  You're receiving this because you subscribed at <strong style="color: #6a6a6a;">recon.com.ng</strong>
+              <td style="background-color: #f8f9fb; padding: 32px 40px; border-top: 1px solid #e5e5e5; text-align: center;">
+                <p style="margin: 0 0 8px; font-size: 12px; color: #999999;">
+                  © 2026 recon. All rights reserved.
                 </p>
-                <p style="margin: 0; font-size: 12px; text-align: center;">
-                  <a href="#" style="color: #4a4a4a; text-decoration: underline;">Unsubscribe</a>
-                  <span style="color: #2a2a2a; margin: 0 8px;">|</span>
-                  <a href="#" style="color: #4a4a4a; text-decoration: underline;">View in browser</a>
+                <p style="margin: 0; font-size: 11px; color: #bbb;">
+                  You're receiving this because you subscribed at recon.com.ng
                 </p>
               </td>
             </tr>

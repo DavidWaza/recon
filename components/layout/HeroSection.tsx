@@ -253,7 +253,7 @@ export function HeroSection({
             </AnimatePresence>
 
             {/* Newsletter CTA */}
-            {/* <div className="mt-10 border-t border-border pt-8">
+            <div className="mt-10 border-t border-border pt-8">
               <p className="text-lg font-semibold text-white sm:text-xl">
                 Discover high-rated movies every Friday
               </p>
@@ -287,10 +287,10 @@ export function HeroSection({
                   You&apos;re on the list! Check your inbox this Friday.
                 </p>
               )}
-            </div> */}
+            </div>
 
             {/* Join the Waitlist */}
-            <div className="mt-10 border-t border-border pt-8 space-y-3.5">
+            {/* <div className="mt-10 border-t border-border pt-8 space-y-3.5">
               <p className="text-lg font-semibold text-white sm:text-xl">
                 Join the waitlist for Recon
               </p>
@@ -298,7 +298,7 @@ export function HeroSection({
                 Get early access to personalized movie recommendations and more.
               </p>
               <WaitlistForm />
-            </div>
+            </div> */}
           </div>
           {/* Poster thumbnail picker (right on desktop) */}
           {slideCount > 1 && (
