@@ -26,7 +26,7 @@ export async function POST(req: Request) {
   }
 
   const { error: emailError } = await resend.emails.send({
-    from: "Recon Movie Picks <onboarding@resend.dev>",
+    from: "Recon recon <onboarding@resend.dev>",
     to: email,
     subject: "🎬 You're on the list — first picks land Friday!",
     html: `
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Weekly Movie Picks</title>
+    <title>Weekly recon</title>
   </head>
   <body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
     <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0a0a0a; padding: 40px 16px;">
@@ -50,7 +50,7 @@ export async function POST(req: Request) {
                   Weekly Newsletter
                 </p>
                 <h1 style="margin: 0; font-size: 32px; font-weight: 800; color: #ffffff; line-height: 1.2; letter-spacing: -0.5px;">
-                  🎬 Your Friday<br/>Movie Picks
+                  🎬 Your Friday<br/>recon
                 </h1>
               </td>
             </tr>
@@ -139,7 +139,7 @@ export async function POST(req: Request) {
             <tr>
               <td style="background-color: #0f0f0f; padding: 24px 40px; border-top: 1px solid #1f1f1f;">
                 <p style="margin: 0 0 8px; font-size: 12px; color: #4a4a4a; text-align: center; line-height: 1.6;">
-                  You're receiving this because you subscribed at <strong style="color: #6a6a6a;">moviepicks.com</strong>
+                  You're receiving this because you subscribed at <strong style="color: #6a6a6a;">recon.com.ng</strong>
                 </p>
                 <p style="margin: 0; font-size: 12px; text-align: center;">
                   <a href="#" style="color: #4a4a4a; text-decoration: underline;">Unsubscribe</a>

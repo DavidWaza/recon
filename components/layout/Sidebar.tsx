@@ -29,7 +29,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
           </span>
         </Link>
         <p className="mt-1 hidden text-xs text-muted lg:block">
-          Weekly movie picks
+          Weekly recon
         </p>
       </div>
 

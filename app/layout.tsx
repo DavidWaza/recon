@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Recon — Weekly High-Rated Movie Picks",
+  title: "Recon — Weekly High-Rated recon",
   description:
     "Curated Netflix movies rated 7.0+ on IMDb, delivered every Friday.",
 };

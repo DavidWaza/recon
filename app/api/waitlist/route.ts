@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
   // Send confirmation email
   const { error: emailError } = await resend.emails.send({
-    from: "Movie Picks <onboarding@resend.dev>",
+    from: "recon <onboarding@resend.dev>",
     to: email,
     subject: "🎬 You're on the waitlist!",
     html: waitlistEmailTemplate( email, count ?? 1),
@@ -107,7 +107,7 @@ function waitlistEmailTemplate(email: string, position: number) {
 
                   <p style="margin: 0; font-size: 13px; color: #4a4a4a; text-align: center;">
                     You're receiving this because you joined the waitlist at
-                    <strong style="color: #6a6a6a;">moviepicks.com</strong>
+                    <strong style="color: #6a6a6a;">recon.com.ng</strong>
                   </p>
                 </td>
               </tr>

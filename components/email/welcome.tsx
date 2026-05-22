@@ -8,7 +8,7 @@ export function WelcomeEmail({ email }: WelcomeEmailProps) {
   return (
     <div style={{ fontFamily: "Arial, sans-serif", maxWidth: "600px", margin: "0 auto" }}>
       <h1 style={{ color: "#ffffff", backgroundColor: "#E50914", padding: "20px", margin: 0 }}>
-        🎬 Weekly Movie Picks
+        🎬 Weekly recon
       </h1>
       <div style={{ padding: "24px", backgroundColor: "#141414", color: "#ffffff" }}>
         <h2>You're on the list!</h2>
@@ -22,7 +22,7 @@ export function WelcomeEmail({ email }: WelcomeEmailProps) {
           </p>
         </div>
         <p style={{ marginTop: "24px", color: "#a3a3a3", fontSize: "12px" }}>
-          You're receiving this because you signed up at moviepicks.com.
+          You're receiving this because you signed up at recon.com.ng.
           <a href="#" style={{ color: "#E50914" }}> Unsubscribe</a>
         </p>
       </div>

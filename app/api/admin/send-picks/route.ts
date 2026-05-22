@@ -57,7 +57,7 @@ export async function POST(req: Request) {
 
     const emailPromises = batch.map(({ email }) =>
       resend.emails.send({
-        from: `Movie Picks <${senderEmail}>`,
+        from: `recon <${senderEmail}>`,
         to: email,
         subject: `🎬 This week's top Netflix picks are here!`,
         html: weeklyPicksEmailTemplate(email, picks),
@@ -200,7 +200,7 @@ function weeklyPicksEmailTemplate(email: string, picks: any[]) {
               <tr>
                 <td style="background-color: #0f0f0f; padding: 24px 40px; border-top: 1px solid #1f1f1f;">
                   <p style="margin: 0 0 8px; font-size: 12px; color: #4a4a4a; text-align: center;">
-                    You're receiving this because you subscribed at <strong style="color: #6a6a6a;">moviepicks.com</strong>
+                    You're receiving this because you subscribed at <strong style="color: #6a6a6a;">recon.com.ng</strong>
                   </p>
                   <p style="margin: 0; font-size: 12px; text-align: center;">
                     <a href="#" style="color: #4a4a4a;">Unsubscribe</a>
