@@ -3,125 +3,40 @@ import type { Movie } from "@/lib/types";
 export const movies: Movie[] = [
   {
     id: 1,
-    title: "They Cloned Tyrone",
-    imdbRating: 6.6,
-    genre: ["Sci-Fi", "Comedy", "Mystery"],
+    title: "Forgotten",
+    imdbRating: 7.4,
+    genre: ["Mystery", "Thriller", "Drama"],
     description:
-      "A drug dealer, a pimp, and a sex worker uncover a disturbing government cloning conspiracy in their neighborhood.",
+      "After moving into a new home, Jin-seok witnesses his brother being kidnapped. When his brother returns 19 days later with no memory, Jin-seok begins to uncover a deeply disturbing truth.",
     poster:
-      "https://people.com/thmb/dotuMNV2QZp2Hr-gs0d5p0x_OFw=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(674x0:676x2)/they-cloned-tyrone-netflix-061323-8-2cee58119d8341ab8dcf5028489f8757.jpg",
+      "https://res.cloudinary.com/dgbl43ljm/image/upload/v1779293269/rencom/forgotten_vyobdh.jpg",
     backdrop:
-      "https://people.com/thmb/dotuMNV2QZp2Hr-gs0d5p0x_OFw=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(674x0:676x2)/they-cloned-tyrone-netflix-061323-8-2cee58119d8341ab8dcf5028489f8757.jpg",
+      "https://res.cloudinary.com/dgbl43ljm/image/upload/v1779293269/rencom/forgotten_vyobdh.jpg",
     netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=2S3M1xFVd9s",
-    watchUrl: "https://www.netflix.com/title/80994082",
-    year: 2023,
-    isNewThisWeek: true,
+    trailerUrl: "https://www.youtube.com/watch?v=ZeNEBxRDzuM",
+    watchUrl: "https://www.netflix.com/title/80189019",
+    year: 2017,
+    isNewThisWeek: false,
   },
   {
     id: 2,
-    title: "Rebel Moon – Part One: A Child of Fire",
-    imdbRating: 5.6,
-    genre: ["Sci-Fi", "Action", "Adventure"],
+    title: "Smile 2",
+    imdbRating: 6.7,
+    genre: ["Horror", "Mystery", "Thriller"],
     description:
-      "A mysterious outsider rallies warriors from across the galaxy to defend a peaceful colony from an oppressive empire.",
+      "About to embark on a new world tour, global pop sensation Skye Riley begins experiencing increasingly terrifying and inexplicable events, forced to face her dark past before it spirals out of control.",
     poster:
-      "https://image.tmdb.org/t/p/w500/ui4DrH1cKk2vkHshcUcGt2lKxCm.jpg",
+      "https://res.cloudinary.com/dgbl43ljm/image/upload/v1779485788/ff095060bb7a4e874a02dd780b73af58_ccyr0q.jpg",
     backdrop:
-      "https://image.tmdb.org/t/p/w1280/ui4DrH1cKk2vkHshcUcGt2lKxCm.jpg",
-    netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=_rHLOXbFZtI",
-    watchUrl: "https://www.netflix.com/title/81464239",
-    year: 2023,
+      "https://res.cloudinary.com/dgbl43ljm/image/upload/v1779485788/ff095060bb7a4e874a02dd780b73af58_ccyr0q.jpg",
+    netflixAvailable: false,
+    trailerUrl: "https://www.youtube.com/watch?v=WPm9g2HtOMc",
+    watchUrl: "https://www.paramountplus.com/movies/smile-2/",
+    year: 2024,
     isNewThisWeek: true,
   },
   {
     id: 3,
-    title: "6 Underground",
-    imdbRating: 6.1,
-    genre: ["Action", "Thriller"],
-    description:
-      "Six individuals fake their deaths and form a vigilante squad to take down dangerous criminals around the world.",
-    poster:
-      "https://image.tmdb.org/t/p/w500/lnWkyG3LLgbbrIEeyl5mK5VRFe4.jpg",
-    backdrop:
-      "https://image.tmdb.org/t/p/w1280/lnWkyG3LLgbbrIEeyl5mK5VRFe4.jpg",
-    netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=YLE85olJjp8",
-    watchUrl: "https://www.netflix.com/title/81065331",
-    year: 2019,
-    isNewThisWeek: false,
-  },
-  {
-    id: 4,
-    title: "Extraction 2",
-    imdbRating: 7.0,
-    genre: ["Action", "Thriller"],
-    description:
-      "Tyler Rake returns from the brink of death for another deadly black-ops mission.",
-    poster:
-      "https://image.tmdb.org/t/p/w500/7gKI9hpEMcZUQpNgKrkDzJpbnNS.jpg",
-    backdrop:
-      "https://image.tmdb.org/t/p/w1280/7gKI9hpEMcZUQpNgKrkDzJpbnNS.jpg",
-    netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=Y274jZs5s7s",
-    watchUrl: "https://www.netflix.com/title/81098494",
-    year: 2023,
-    isNewThisWeek: true,
-  },
-  {
-    id: 5,
-    title: "The Gray Man",
-    imdbRating: 6.5,
-    genre: ["Action", "Thriller"],
-    description:
-      "A skilled CIA operative uncovers agency secrets and becomes the target of a global manhunt.",
-    poster:
-      "https://image.tmdb.org/t/p/w500/8cXbitsS6dWQ5gfMTZdorpAAzEH.jpg",
-    backdrop:
-      "https://image.tmdb.org/t/p/w1280/8cXbitsS6dWQ5gfMTZdorpAAzEH.jpg",
-    netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=BmllggGO4pM",
-    watchUrl: "https://www.netflix.com/title/81160697",
-    year: 2022,
-    isNewThisWeek: false,
-  },
-  {
-    id: 6,
-    title: "Red Notice",
-    imdbRating: 6.3,
-    genre: ["Action", "Comedy", "Crime"],
-    description:
-      "An FBI profiler reluctantly teams up with a notorious art thief to catch the world’s most wanted criminal.",
-    poster:
-      "https://image.tmdb.org/t/p/w500/lAXONuqg41NwUMuzMiFvicDET9Y.jpg",
-    backdrop:
-      "https://image.tmdb.org/t/p/w1280/lAXONuqg41NwUMuzMiFvicDET9Y.jpg",
-    netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=Pj0wz7zu3Ms",
-    watchUrl: "https://www.netflix.com/title/81161626",
-    year: 2021,
-    isNewThisWeek: false,
-  },
-  {
-    id: 7,
-    title: "Army of the Dead",
-    imdbRating: 5.8,
-    genre: ["Action", "Horror", "Sci-Fi"],
-    description:
-      "A group of mercenaries ventures into zombie-infested Las Vegas for the heist of a lifetime.",
-    poster:
-      "https://image.tmdb.org/t/p/w500/z8CExJekGrEThbpMXAmCFvvgoJR.jpg",
-    backdrop:
-      "https://image.tmdb.org/t/p/w1280/z8CExJekGrEThbpMXAmCFvvgoJR.jpg",
-    netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=tI1JGPhYBS8",
-    watchUrl: "https://www.netflix.com/title/81115346",
-    year: 2021,
-    isNewThisWeek: false,
-  },
-  {
-    id: 8,
     title: "Bird Box",
     imdbRating: 6.6,
     genre: ["Thriller", "Horror", "Drama"],
@@ -138,41 +53,125 @@ export const movies: Movie[] = [
     isNewThisWeek: false,
   },
   {
-    id: 9,
-    title: "Project Power",
-    imdbRating: 6.0,
-    genre: ["Action", "Sci-Fi", "Crime"],
+    id: 4,
+    title: "Dune: Part Two",
+    imdbRating: 8.5,
+    genre: ["Sci-Fi", "Action", "Adventure"],
     description:
-      "A former soldier teams up with a cop to stop a dangerous drug that grants temporary superpowers.",
+      "Paul Atreides unites with Chani and the Fremen while on a warpath of revenge against the conspirators who destroyed his family, facing a choice between the love of his life and the fate of the universe.",
     poster:
-      "https://image.tmdb.org/t/p/w500/TnOeov4w0sTtV2gqICqIxVi74V.jpg",
+      "https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
     backdrop:
-      "https://image.tmdb.org/t/p/w1280/riiApN308iGy9hSWHXK1NClITsW.jpg",
-    netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=xw1vQgVaYNQ",
-    watchUrl: "https://www.netflix.com/title/80204465",
-    year: 2020,
+      "https://image.tmdb.org/t/p/w1280/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg",
+    netflixAvailable: false,
+    trailerUrl: "https://www.youtube.com/watch?v=Way9Dexny3w",
+    watchUrl: "https://www.max.com/movies/dune-part-two/",
+    year: 2024,
     isNewThisWeek: false,
   },
   {
-    id: 10,
-    title: "Spaceman",
-    imdbRating: 5.8,
-    genre: ["Sci-Fi", "Drama"],
+    id: 5,
+    title: "Spider-Man: Into the Spider-Verse",
+    imdbRating: 8.4,
+    genre: ["Animation", "Action", "Adventure"],
     description:
-      "An astronaut on a lonely mission encounters a mysterious creature that helps him confront his failing marriage.",
+      "Brooklyn teenager Miles Morales becomes Spider-Man and teams up with alternate universe versions of the web-slinger to stop a threat that could destroy all reality.",
     poster:
-      "https://image.tmdb.org/t/p/w500/f46WvKEsBn98WJbPJcO47ZoKn6B.jpg",
+      "https://image.tmdb.org/t/p/w500/iiZZdoQBEYBv6id8su7ImL0oCbD.jpg",
     backdrop:
-      "https://image.tmdb.org/t/p/w1280/oBIQDKcqNxKckjugtmzpIIOgoc4.jpg",
+      "https://image.tmdb.org/t/p/w1280/iiZZdoQBEYBv6id8su7ImL0oCbD.jpg",
     netflixAvailable: true,
-    trailerUrl: "https://www.youtube.com/watch?v=rNZ0xKaCdus",
-    watchUrl: "https://www.netflix.com/title/81350656",
+    trailerUrl: "https://www.youtube.com/watch?v=tg52up16eq0",
+    watchUrl: "https://www.netflix.com/title/81004016",
+    year: 2018,
+    isNewThisWeek: false,
+  },
+  {
+    id: 6,
+    title: "The RIP",
+    imdbRating: 6.8,
+    genre: ["Action", "Crime", "Thriller"],
+    description:
+      "A group of Miami cops discover a stash of millions in cash, leading to distrust and danger as outsiders learn about the massive seizure and everyone questions who they can rely on.",
+    poster:
+      "https://res.cloudinary.com/dgbl43ljm/image/upload/v1779485788/the-rip-movie-poster_wqu9ng.webp",
+    backdrop:
+      "https://res.cloudinary.com/dgbl43ljm/image/upload/v1779485788/the-rip-movie-backdrop_jhjvqz.jpg",
+    netflixAvailable: true,
+    trailerUrl: "https://www.youtube.com/watch?v=QJT6qCBE2jQ",
+    watchUrl: "https://www.netflix.com/title/81797921",
+    year: 2026,
+    isNewThisWeek: true,
+  },
+  {
+    id: 7,
+    title: "Mortal Kombat",
+    imdbRating: 6.1,
+    genre: ["Action", "Adventure", "Fantasy"],
+    description:
+      "MMA fighter Cole Young, unaware of his heritage, seeks out Earth's greatest champions to stand against the enemies of Outworld in a high-stakes battle for the universe.",
+    poster:
+      "https://res.cloudinary.com/dgbl43ljm/image/upload/v1779486018/xGuOF1T3WmPsAcQEQJfnG7Ud9f8_kiiqb8.webp",
+    backdrop:
+      "https://res.cloudinary.com/dgbl43ljm/image/upload/v1779486018/xGuOF1T3WmPsAcQEQJfnG7Ud9f8_kiiqb8.webp",
+    netflixAvailable: false,
+    trailerUrl: "https://www.youtube.com/watch?v=tL6orNhbSVE",
+    watchUrl: "https://www.max.com/movies/mortal-kombat/",
+    year: 2021,
+    isNewThisWeek: false,
+  },
+  {
+    id: 8,
+    title: "Scarface",
+    imdbRating: 8.3,
+    genre: ["Crime", "Drama"],
+    description:
+      "Cuban immigrant Tony Montana claws his way to the top of Miami's drug trade, but his insatiable greed and paranoia set him on a catastrophic path to destruction.",
+    poster:
+      "https://res.cloudinary.com/dgbl43ljm/image/upload/v1779486018/iQ5ztdjvteGeboxtmRdXEChJOHh_nxxjd0.webp",
+    backdrop:
+      "https://res.cloudinary.com/dgbl43ljm/image/upload/v1779486018/iQ5ztdjvteGeboxtmRdXEChJOHh_nxxjd0.webp",
+    netflixAvailable: false,
+    trailerUrl: "https://www.youtube.com/watch?v=CF1FE5mGTdo",
+    watchUrl: "https://www.amazon.com/Scarface-Al-Pacino/dp/B001ANYNLM",
+    year: 1983,
+    isNewThisWeek: false,
+  },
+  {
+    id: 9,
+    title: "Carry-On",
+    imdbRating: 6.5,
+    genre: ["Action", "Crime", "Thriller"],
+    description:
+      "A young TSA agent is blackmailed by a mysterious traveler into letting a dangerous package slip onto a Christmas Eve flight, forcing him to outsmart the threat before it's too late.",
+    poster:
+      "https://res.cloudinary.com/dgbl43ljm/image/upload/v1779486017/AAAAQVthPYbc2c3ih7Nyy5Q2MF5_FoOhLwMQsjBREOtioR4WI8r0VHJZJ3BqnToMOBsq3RoN79ovtYD4DW3L1JHTH1i3J4owz7N0fnI-8c1_Z3cYJC9cqQc0ukFaOUD78QVNAwaVRsq72MpKqOAXO2fUuMw1hZkU83iCkUOABYeaX7HhewwOLfDg30W1WMakngy_fwh72l.jpg",
+    backdrop:
+      "https://res.cloudinary.com/dgbl43ljm/image/upload/v1779486017/AAAAQVthPYbc2c3ih7Nyy5Q2MF5_FoOhLwMQsjBREOtioR4WI8r0VHJZJ3BqnToMOBsq3RoN79ovtYD4DW3L1JHTH1i3J4owz7N0fnI-8c1_Z3cYJC9cqQc0ukFaOUD78QVNAwaVRsq72MpKqOAXO2fUuMw1hZkU83iCkUOABYeaX7HhewwOLfDg30W1WMakngy_fwh72l.jpg",
+    netflixAvailable: true,
+    trailerUrl: "https://www.youtube.com/watch?v=kD1XTCVRkCo",
+    watchUrl: "https://www.netflix.com/title/81476963",
     year: 2024,
     isNewThisWeek: true,
   },
+  {
+    id: 10,
+    title: "Caught Stealing",
+    imdbRating: 6.9,
+    genre: ["Action", "Comedy", "Crime"],
+    description:
+      "Burned-out ex-baseball player Hank Thompson finds himself hunted by dangerous gangsters in late 1990s New York City after agreeing to cat-sit for his neighbor — with no idea why everyone wants a piece of him.",
+    poster:
+      "https://res.cloudinary.com/dgbl43ljm/image/upload/v1779486017/qKexsXGDhYBF3FpdmL0JcGnKVEq_wk4hav.webp",
+    backdrop:
+      "https://res.cloudinary.com/dgbl43ljm/image/upload/v1779486017/qKexsXGDhYBF3FpdmL0JcGnKVEq_wk4hav.webp",
+    netflixAvailable: false,
+    trailerUrl: "https://www.youtube.com/watch?v=p6CX-m1IVXQ",
+    watchUrl: "https://www.fandangonow.com/details/movie/caught-stealing-2025",
+    year: 2025,
+    isNewThisWeek: true,
+  },
 ];
-
 export const weeklyPicks = movies.filter((m) => m.isNewThisWeek);
 
 export const trendingPicks = [...movies].sort(
