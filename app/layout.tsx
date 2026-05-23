@@ -10,9 +10,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Recon — Weekly High-Rated recon",
+  title: "Recon — Weekly High-Rated recommendations for Netflix Movies",
   description:
-    "Curated Netflix movies rated 7.0+ on IMDb, delivered every Friday.",
+    "Curated Netflix movies rated on IMDb, delivered every Friday.",
+    icons : "/favicon.ico",
 };
 
 export default function RootLayout({

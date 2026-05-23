@@ -54,6 +54,7 @@ export async function POST(req: Request) {
             <!-- Header -->
             <tr>
               <td style="background-color: #1b1f3b; padding: 48px 40px; text-align: center;">
+                <img src="https://recon.com.ng/icon.png" alt="recon logo" style="width: 48px; height: 48px; margin-bottom: 16px;" />
                 <h1 style="margin: 0; font-size: 32px; font-weight: 700; color: #ffffff; line-height: 1.2; letter-spacing: -0.5px;">
                   🎬 Welcome to recon
                 </h1>

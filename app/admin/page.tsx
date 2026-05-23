@@ -19,6 +19,8 @@ const GENRE_OPTIONS = [
   "Fantasy",
   "Romance",
   "Documentary",
+  "War",
+  "Tragedy",
 ];
 
 const IMDB_OPTIONS = [

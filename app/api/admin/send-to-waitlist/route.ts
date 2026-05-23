@@ -28,25 +28,11 @@ export async function POST(req: Request) {
       );
     }
 
-    // Fetch all waitlist and subscriber users
-    const [{ data: waitlistUsers, error: waitlistError }, { data: subscriberUsers, error: subscriberError }] = await Promise.all([
-      supabaseAdmin
-        .from("waitlist")
-        .select("id, email, created_at")
-        .order("created_at", { ascending: true }),
-      supabaseAdmin
-        .from("subscribers")
-        .select("id, email, created_at")
-        .order("created_at", { ascending: true }),
-    ]);
-
-    if (waitlistError) {
-      console.error("Error fetching waitlist users:", waitlistError);
-      return NextResponse.json(
-        { error: "Failed to fetch waitlist users" },
-        { status: 500 }
-      );
-    }
+    // Fetch all subscriber users
+    const { data: subscribers, error: subscriberError } = await supabaseAdmin
+      .from("subscribers")
+      .select("id, email, created_at")
+      .order("created_at", { ascending: true });
 
     if (subscriberError) {
       console.error("Error fetching subscriber users:", subscriberError);
@@ -56,27 +42,14 @@ export async function POST(req: Request) {
       );
     }
 
-    // Merge and deduplicate users by email
-    const emailSet = new Set<string>();
-    const allUsers: Array<{ id: string; email: string; created_at: string }> = [];
-
-    const allFetchedUsers = [...(waitlistUsers || []), ...(subscriberUsers || [])];
-    
-    for (const user of allFetchedUsers) {
-      if (!emailSet.has(user.email)) {
-        emailSet.add(user.email);
-        allUsers.push(user);
-      }
-    }
-
-    if (allUsers.length === 0) {
+    if (!subscribers || subscribers.length === 0) {
       return NextResponse.json(
         {
           success: true,
           sent: 0,
           failed: 0,
           total: 0,
-          message: "No users on waitlist or subscribers",
+          message: "No subscribers found",
         },
         { status: 200 }
       );
@@ -87,8 +60,8 @@ export async function POST(req: Request) {
     let failed = 0;
     const batchSize = 10;
 
-    for (let i = 0; i < allUsers.length; i += batchSize) {
-      const batch = allUsers.slice(i, i + batchSize);
+    for (let i = 0; i < subscribers.length; i += batchSize) {
+      const batch = subscribers.slice(i, i + batchSize);
 
       const emailPromises = batch.map((user) =>
         getTransporter()
@@ -110,7 +83,7 @@ export async function POST(req: Request) {
       await Promise.all(emailPromises);
 
       // Add delay between batches to respect rate limits
-      if (i + batchSize < allUsers.length) {
+      if (i + batchSize < subscribers.length) {
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
     }
@@ -120,19 +93,20 @@ export async function POST(req: Request) {
         success: true,
         sent,
         failed,
-        total: allUsers.length,
+        total: subscribers.length,
         message: `Sent to ${sent} users. ${failed > 0 ? `${failed} failed.` : "All successful!"}`,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error sending to waitlist:", error);
+    console.error("Error sending to subscribers:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
     );
   }
 }
+
 
 function generateEmailHTML(
   message: string,
@@ -162,7 +136,7 @@ function generateEmailHTML(
               <tr>
                 <td style="background-color: #1b1f3b; padding: 48px 40px; text-align: center;">
                   <h1 style="margin: 0; font-size: 32px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">
-                    🎬 ${isWeeklyRecommendation ? "This Week's Picks" : "recon"}
+                    🎬 ${isWeeklyRecommendation ? "This Week's Picks" : "recon updates and news"}
                   </h1>
                   <p style="margin: 12px 0 0; font-size: 16px; color: rgba(255,255,255,0.85); font-weight: 400;">
                     ${isWeeklyRecommendation ? "Your curated weekly selections" : ""}
