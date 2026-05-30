@@ -55,7 +55,7 @@ async function fetchLatestWeeklyPicks(): Promise<Movie[]> {
 export default async function Home() {
   const latestPicks = await fetchLatestWeeklyPicks();
   const heroCarouselMovies = latestPicks.slice(0, 6);
-  const heroPreviewMovies = latestPicks.slice(0, 3);
+  const heroPreviewMovies = latestPicks.slice(0, 5);
 
   return (
     <LandingPage

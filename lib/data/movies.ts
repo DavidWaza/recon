@@ -180,7 +180,7 @@ export const trendingPicks = [...movies].sort(
 
 export const previewMovies = movies.slice(0, 8);
 
-export const heroPreviewMovies = movies.slice(0, 3);
+export const heroPreviewMovies = movies.slice(0, 5);
 
 /** Full-bleed hero carousel */
 export const heroCarouselMovies = movies.slice(0, 6);

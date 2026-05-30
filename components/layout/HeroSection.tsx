@@ -446,7 +446,7 @@ export function HeroPreviewSection({ movies }: { movies: Movie[] }) {
           </p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {movies.map((movie, i) => (
             <motion.div
               key={movie.id}

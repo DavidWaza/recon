@@ -13,7 +13,10 @@ export const metadata: Metadata = {
   title: "Recon — Weekly High-Rated recommendations for Netflix Movies",
   description:
     "Curated Netflix movies rated on IMDb, delivered every Friday.",
-    icons : "/favicon.ico",
+    icons: {
+      icon: "/icon.png",
+      apple: "/icon.png",
+    },
 };
 
 export default function RootLayout({
