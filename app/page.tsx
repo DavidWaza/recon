@@ -6,6 +6,12 @@ import {
 } from "@/lib/data/movies";
 import type { Movie } from "@/lib/types";
 
+// Re-fetch from Supabase at most once every 60 seconds (ISR).
+// Without this, the page is statically rendered at build time and the
+// Supabase query result is baked in — which is why production showed
+// stale data while localhost (dev mode, always dynamic) worked fine.
+export const revalidate = 60;
+
 async function fetchLatestWeeklyPicks(): Promise<Movie[]> {
   const { data, error } = await supabaseAdmin
     .from("weekly_picks")
@@ -16,6 +22,9 @@ async function fetchLatestWeeklyPicks(): Promise<Movie[]> {
     .order("id", { ascending: false });
 
   if (error || !data || data.length === 0) {
+    if (error) {
+      console.error("[fetchLatestWeeklyPicks] Supabase error:", error.message);
+    }
     return defaultHeroCarouselMovies;
   }
 

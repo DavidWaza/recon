@@ -16,7 +16,6 @@ export function Navbar() {
             height={30}
             priority
           />
-          
         </Link>
       </div>
     </header>
