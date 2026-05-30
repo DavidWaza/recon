@@ -12,7 +12,7 @@ const GENRE_OPTIONS = [
   "Sci-Fi",
   "Thriller",
   "Mystery",
-  'Physchological Thriller',
+  "Physchological Thriller",
   "Mind Bending",
   "Dark Comedy",
   "Crime",
@@ -21,21 +21,47 @@ const GENRE_OPTIONS = [
   "Documentary",
   "War",
   "Tragedy",
+  "Animation",
+  "War Crime",
+  "Epic Adventure",
 ];
 
 const IMDB_OPTIONS = [
+  "10.0",
+  "9.8",
+  "9.7",
+  "9.6",
   "9.5",
+  "9.4",
+  "9.3",
+  "9.2",
+  "9.1",
   "9.0",
+  "8.9",
+  "8.8",
+  "8.7",
+  "8.6",
   "8.5",
+  "8.4",
+  "8.3",
+  "8.2",
+  "8.1",
   "8.0",
+  "7.9",
+  "7.8",
+  "7.7",
+  "7.6",
   "7.5",
+  "7.4",
+  "7.3",
+  "7.2",
+  "7.1",
   "7.0",
+  "6.9",
+  "6.8",
+  "6.7",
+  "6.6",
   "6.5",
-  "6.0",
-  "5.5",
-  "5.0",
-  "4.5",
-  "4.0",
 ];
 
 const PERSIST_KEY = "recon-admin-picks";
@@ -168,11 +194,17 @@ export default function AdminPage() {
                     </label>
                     <select
                       value={pick.imdb_rating}
-                      onChange={(e) => updatePick(i, "imdb_rating", e.target.value)}
+                      onChange={(e) =>
+                        updatePick(i, "imdb_rating", e.target.value)
+                      }
                       className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20"
                     >
                       {IMDB_OPTIONS.map((value) => (
-                        <option key={value} value={value} className="bg-[#0f0f0f] text-white">
+                        <option
+                          key={value}
+                          value={value}
+                          className="bg-[#0f0f0f] text-white"
+                        >
                           {value}
                         </option>
                       ))}
@@ -187,7 +219,9 @@ export default function AdminPage() {
                   <textarea
                     rows={4}
                     value={pick.description}
-                    onChange={(e) => updatePick(i, "description", e.target.value)}
+                    onChange={(e) =>
+                      updatePick(i, "description", e.target.value)
+                    }
                     placeholder="A concise overview of the pick, styled for the newsletter."
                     className="w-full resize-none bg-[#0f0f0f] border border-[#2a2a2a] rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20"
                   />
@@ -200,20 +234,31 @@ export default function AdminPage() {
                     </label>
                     <select
                       multiple
-                      value={pick.genre.split(",").map((value) => value.trim()).filter(Boolean)}
+                      value={pick.genre
+                        .split(",")
+                        .map((value) => value.trim())
+                        .filter(Boolean)}
                       onChange={(e) => {
-                        const selectedGenres = Array.from(e.target.selectedOptions).map((option) => option.value);
+                        const selectedGenres = Array.from(
+                          e.target.selectedOptions,
+                        ).map((option) => option.value);
                         updatePick(i, "genre", selectedGenres.join(", "));
                       }}
                       className="h-32 w-full min-h-32 bg-[#0f0f0f] border border-[#2a2a2a] rounded-2xl px-3 py-3 text-white text-sm focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20"
                     >
                       {GENRE_OPTIONS.map((genre) => (
-                        <option key={genre} value={genre} className="bg-[#0f0f0f] text-white">
+                        <option
+                          key={genre}
+                          value={genre}
+                          className="bg-[#0f0f0f] text-white"
+                        >
                           {genre}
                         </option>
                       ))}
                     </select>
-                    <p className="text-[11px] text-[#7a7a7a]">Use Ctrl/Cmd+click to select multiple genres.</p>
+                    <p className="text-[11px] text-[#7a7a7a]">
+                      Use Ctrl/Cmd+click to select multiple genres.
+                    </p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {pick.genre
                         .split(",")
@@ -237,7 +282,9 @@ export default function AdminPage() {
                     <input
                       type="text"
                       value={pick.trailer_url}
-                      onChange={(e) => updatePick(i, "trailer_url", e.target.value)}
+                      onChange={(e) =>
+                        updatePick(i, "trailer_url", e.target.value)
+                      }
                       placeholder="YouTube trailer link"
                       className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20"
                     />
@@ -252,7 +299,9 @@ export default function AdminPage() {
                     <input
                       type="text"
                       value={pick.poster_url}
-                      onChange={(e) => updatePick(i, "poster_url", e.target.value)}
+                      onChange={(e) =>
+                        updatePick(i, "poster_url", e.target.value)
+                      }
                       placeholder="Cover image link"
                       className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20"
                     />
@@ -265,7 +314,9 @@ export default function AdminPage() {
                     <input
                       type="text"
                       value={pick.netflix_url}
-                      onChange={(e) => updatePick(i, "netflix_url", e.target.value)}
+                      onChange={(e) =>
+                        updatePick(i, "netflix_url", e.target.value)
+                      }
                       placeholder="Netflix watch link"
                       className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20"
                     />

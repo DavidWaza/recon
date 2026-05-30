@@ -243,11 +243,11 @@ export function HeroSection({
                   >
                     <CTAButton size="md">Watch Trailer</CTAButton>
                   </a>
-                  <Link href="#">
+                  {/* <Link href="#">
                     <CTAButton variant="secondary" size="md" type="button">
                       More info
                     </CTAButton>
-                  </Link>
+                  </Link> */}
                 </div>
               </motion.div>
             </AnimatePresence>
