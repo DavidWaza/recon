@@ -102,7 +102,7 @@ export default function SendWaitlistMessagePage() {
                 <tr>
                   <td style="background-color: #ffffff; padding: 48px 40px;">
                     <div class="message" style="margin: 0 0 36px; font-size: 16px; color: #2a2a2a; line-height: 1.8;">
-                      ${message.replace(/\n/g, "<br/>")}
+                      ${message}
                     </div>
 
                     <!-- CTA Button -->
