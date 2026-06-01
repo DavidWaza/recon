@@ -45,7 +45,7 @@ export default function SendWaitlistMessagePage() {
 
       if (data.success) {
         toast.success(
-          `Email sent to ${data.sent} users! ${data.failed > 0 ? `(${data.failed} failed)` : ""}`
+          `Email sent to ${data.sent} users! ${data.failed > 0 ? `(${data.failed} failed)` : ""}`,
         );
         setSubject("");
         setMessage("");
@@ -102,7 +102,7 @@ export default function SendWaitlistMessagePage() {
                 <tr>
                   <td style="background-color: #ffffff; padding: 48px 40px;">
                     <div class="message" style="margin: 0 0 36px; font-size: 16px; color: #2a2a2a; line-height: 1.8;">
-                      ${message.replace(/\n/g, "<br/><br/>")}
+                      ${message.replace(/\n/g, "<br/>")}
                     </div>
 
                     <!-- CTA Button -->
@@ -213,9 +213,7 @@ export default function SendWaitlistMessagePage() {
               </button>
               <button
                 onClick={handleSend}
-                disabled={
-                  loading || !subject.trim() || !message.trim()
-                }
+                disabled={loading || !subject.trim() || !message.trim()}
                 className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-neutral-700 disabled:text-neutral-500 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition"
               >
                 {loading ? "Sending..." : "Send to All Users"}
@@ -294,7 +292,7 @@ export default function SendWaitlistMessagePage() {
                 onClick={() => {
                   setSubject("🎬 This Week's Top Picks");
                   setMessage(
-                    "We've curated this week's must-watch movies just for you. From thrilling action flicks to heartwarming dramas, there's something for everyone. Check them out and let us know your favorites!"
+                    "We've curated this week's must-watch movies just for you. From thrilling action flicks to heartwarming dramas, there's something for everyone. Check them out and let us know your favorites!",
                   );
                   setIsWeeklyRecommendation(true);
                 }}
@@ -306,7 +304,7 @@ export default function SendWaitlistMessagePage() {
                 onClick={() => {
                   setSubject("🎬 New Additions to Our Collection");
                   setMessage(
-                    "We've just added some amazing new titles! These hidden gems are waiting for you. Discover what's new and join the conversation."
+                    "We've just added some amazing new titles! These hidden gems are waiting for you. Discover what's new and join the conversation.",
                   );
                   setIsWeeklyRecommendation(false);
                 }}
