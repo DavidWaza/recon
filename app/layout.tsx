@@ -10,13 +10,29 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Recon — Weekly High-Rated recommendations for Netflix Movies",
+  title: "Recon — Weekly High-Rated Netflix Movie Recommendations",
   description:
-    "Curated Netflix movies rated on IMDb, delivered every Friday.",
-    icons: {
-      icon: "/icon.png",
-      apple: "/icon.png",
-    },
+    "Discover curated Netflix movies rated highly on IMDb, delivered free to your inbox every Friday. No spam, no algorithms — just great films.",
+  keywords: [
+    "Netflix recommendations",
+    "movie recommendations",
+    "weekly newsletter",
+    "IMDb rated movies",
+    "Netflix movies",
+    "curated movies",
+    "movie newsletter",
+  ],
+  openGraph: {
+    title: "Recon — Weekly High-Rated Netflix Movie Recommendations",
+    description:
+      "Discover curated Netflix movies rated highly on IMDb, delivered free to your inbox every Friday.",
+    type: "website",
+    siteName: "Recon",
+  },
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({

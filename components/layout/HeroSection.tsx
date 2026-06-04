@@ -253,7 +253,7 @@ export function HeroSection({
             </AnimatePresence>
 
             {/* Newsletter CTA */}
-            <div className="mt-10 border-t border-border pt-8">
+            <div id="subscribe" className="mt-10 border-t border-border pt-8">
               <p className="text-lg font-semibold text-white sm:text-xl">
                 Discover high-rated movies every Friday
               </p>

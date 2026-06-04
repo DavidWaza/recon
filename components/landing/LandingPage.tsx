@@ -3,6 +3,10 @@
 import { useState } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { HeroSection, HeroPreviewSection } from "@/components/layout/HeroSection";
+import { HowItWorks } from "@/components/landing/HowItWorks";
+import { WhyRecon } from "@/components/landing/WhyRecon";
+import { FAQ } from "@/components/landing/FAQ";
+import { Footer } from "@/components/landing/Footer";
 import type { Movie } from "@/lib/types";
 
 type LandingPageProps = {
@@ -33,9 +37,10 @@ export function LandingPage({
         submitted={submitted}
       />
       <HeroPreviewSection movies={heroPreviewMovies} />
-      <footer className="border-t border-border py-10 text-center text-sm text-muted">
-        <p>© {new Date().getFullYear()} Recon · Curated for movie lovers</p>
-      </footer>
+      <HowItWorks />
+      <WhyRecon />
+      <FAQ />
+      <Footer />
     </div>
   );
 }
