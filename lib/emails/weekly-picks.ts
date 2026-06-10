@@ -108,6 +108,9 @@ export function weeklyPicksEmailHtml(
   const unsubHref = unsubscribeToken
     ? unsubscribeUrl(unsubscribeToken)
     : `${SITE_URL}/api/unsubscribe`;
+  const preferencesHref = unsubscribeToken
+    ? `${SITE_URL}/preferences?token=${encodeURIComponent(unsubscribeToken)}`
+    : `${SITE_URL}/preferences`;
 
   const today = new Date()
     .toLocaleDateString("en-US", {
@@ -201,9 +204,9 @@ export function weeklyPicksEmailHtml(
                       You're receiving this because you subscribed at <strong style="color:#555;">recon.com.ng</strong>
                     </p>
                     <p style="margin:0 0 10px;font-size:11px;">
-                      <a href="${unsubHref}" style="color:#6b6b6b;text-decoration:underline;">Unsubscribe</a>
+                      <a href="${preferencesHref}" style="color:#6b6b6b;text-decoration:underline;">Update preferences</a>
                       <span style="color:#222;margin:0 8px;">&middot;</span>
-                      <a href="${SITE_URL}" style="color:#6b6b6b;text-decoration:underline;">View in browser</a>
+                      <a href="${unsubHref}" style="color:#6b6b6b;text-decoration:underline;">Unsubscribe</a>
                     </p>
                     <p style="margin:0;font-size:10px;color:#2f2f2f;line-height:1.5;">
                       Movie data and posters provided by TMDB. This product uses the TMDB API but is not endorsed or certified by TMDB.

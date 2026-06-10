@@ -50,6 +50,9 @@ export function welcomeEmailHtml(email: string, unsubscribeToken?: string) {
   const unsubHref = unsubscribeToken
     ? unsubscribeUrl(unsubscribeToken)
     : `${SITE_URL}/api/unsubscribe`;
+  const preferencesHref = unsubscribeToken
+    ? `${SITE_URL}/preferences?token=${encodeURIComponent(unsubscribeToken)}`
+    : `${SITE_URL}/preferences`;
 
   return `
     <!DOCTYPE html>
@@ -160,6 +163,8 @@ export function welcomeEmailHtml(email: string, unsubscribeToken?: string) {
                       &copy; 2026 recon. You're receiving this because you subscribed at <strong style="color:#555;">recon.com.ng</strong>
                     </p>
                     <p style="margin:0;font-size:11px;">
+                      <a href="${preferencesHref}" style="color:#6b6b6b;text-decoration:underline;">Set your preferences</a>
+                      <span style="color:#333;margin:0 6px;">&middot;</span>
                       <a href="${unsubHref}" style="color:#6b6b6b;text-decoration:underline;">Unsubscribe</a>
                     </p>
                   </div>

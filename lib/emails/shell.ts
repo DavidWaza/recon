@@ -56,7 +56,9 @@ export function reconEmailShell({
   const unsubHref = unsubscribeToken
     ? unsubscribeUrl(unsubscribeToken)
     : `${SITE_URL}/api/unsubscribe`;
-  const preferencesHref = SITE_URL;
+  const preferencesHref = unsubscribeToken
+    ? `${SITE_URL}/preferences?token=${encodeURIComponent(unsubscribeToken)}`
+    : `${SITE_URL}/preferences`;
 
   return `<!DOCTYPE html>
 <html lang="en">
