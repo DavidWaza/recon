@@ -34,9 +34,9 @@ export function Footer() {
               <span className="text-lg font-bold text-white">Recon</span>
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">
-              Curated high-rated Netflix movie recommendations delivered to your
-              inbox every Friday. We help you spend less time scrolling and more
-              time watching.
+              Curated, high-rated movie recommendations from across every
+              streaming service, delivered to your inbox every Friday. We help
+              you spend less time scrolling and more time watching.
             </p>
             {/* Contact Info */}
             <div className="mt-6 space-y-2">

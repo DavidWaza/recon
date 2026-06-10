@@ -74,6 +74,7 @@ type HeroSectionProps = {
   email: string;
   onEmailChange: (value: string) => void;
   onSubmit: (e: React.FormEvent) => void;
+  onSubscribed?: (subscriberId: string) => void;
   submitted: boolean;
 };
 
@@ -82,6 +83,7 @@ export function HeroSection({
   email,
   onEmailChange,
   onSubmit,
+  onSubscribed,
   submitted,
 }: HeroSectionProps) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -102,9 +104,11 @@ export function HeroSection({
     }
 
     try {
-      await subscribeUser(email);
+      const res = await subscribeUser(email);
       toast.success("Subscribed! Check your email for updates.");
       onSubmit(e);
+      const subscriberId = res?.data?.id;
+      if (subscriberId) onSubscribed?.(subscriberId);
     } catch (err) {
       const errorMessage = axios.isAxiosError(err)
         ? (err.response?.data?.error ?? "Something went wrong")
@@ -188,15 +192,9 @@ export function HeroSection({
             >
               New picks every Friday
             </motion.p>
-            <div className="flex items-center gap-3 text-sm font-medium text-muted my-5 uppercase">
-              <p>Only on</p>
-              <Image
-                src="/netflix-logo.png"
-                alt="Netflix logo"
-                width={80}
-                height={24}
-                className="object-contain"
-              />
+            <div className="flex items-center gap-2 text-xs font-medium tracking-wide text-muted my-5 uppercase">
+              <span className="inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+              <p>Across every streaming service you already pay for</p>
             </div>
 
             <AnimatePresence mode="wait">
@@ -218,10 +216,15 @@ export function HeroSection({
                       {activeMovie.year}
                     </span>
                   )}
-                  {activeMovie.netflixAvailable && (
-                    <span className="rounded-md bg-[#E50914] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
-                      Netflix
-                    </span>
+                  {activeMovie.watchUrl && (
+                    <a
+                      href={activeMovie.watchUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-md bg-accent/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white ring-1 ring-accent/30 transition-colors hover:bg-accent/25"
+                    >
+                      Where to watch
+                    </a>
                   )}
                 </div>
 
@@ -258,10 +261,11 @@ export function HeroSection({
                 Discover high-rated movies every Friday
               </p>
               <p className="mt-1 text-sm text-muted">
-                Curated Netflix picks rated on IMDb — free weekly newsletter.
+                Curated picks rated on IMDb, with where to stream each one —
+                free weekly newsletter.
               </p>
               <p className="mt-1 text-xs italic text-muted/80">
-                Disclaimer: Available for Netflix users only.
+                Across Netflix, Prime Video, Max, Apple TV+ and more.
               </p>
 
               <form

@@ -10,28 +10,25 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Recon — Weekly High-Rated Netflix Movie Recommendations",
+  title: "Recon — What to Watch Tonight, Across Every Streaming Service",
   description:
-    "Discover curated Netflix movies rated highly on IMDb, delivered free to your inbox every Friday. No spam, no algorithms — just great films.",
+    "Curated, high-rated movies from Netflix, Prime Video, Max, Apple TV+ and more — rated highly on IMDb and delivered free to your inbox every Friday. We tell you exactly where to watch each one.",
   keywords: [
-    "Netflix recommendations",
     "movie recommendations",
+    "what to watch tonight",
+    "streaming recommendations",
     "weekly newsletter",
     "IMDb rated movies",
-    "Netflix movies",
+    "where to watch",
     "curated movies",
     "movie newsletter",
   ],
   openGraph: {
-    title: "Recon — Weekly High-Rated Netflix Movie Recommendations",
+    title: "Recon — What to Watch Tonight, Across Every Streaming Service",
     description:
-      "Discover curated Netflix movies rated highly on IMDb, delivered free to your inbox every Friday.",
+      "Curated, high-rated movies from across every streaming service, delivered free to your inbox every Friday.",
     type: "website",
     siteName: "Recon",
-  },
-  icons: {
-    icon: "/icon.png",
-    apple: "/icon.png",
   },
 };
 

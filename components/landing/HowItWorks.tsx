@@ -7,7 +7,7 @@ const steps = [
     number: "01",
     title: "We curate",
     description:
-      "Every week, we scour Netflix's catalog and cross-reference IMDb ratings to find hidden gems and critically acclaimed films you might have missed.",
+      "Every week, we scan what's streaming across Netflix, Prime Video, Max, Apple TV+ and more, then cross-reference IMDb ratings to surface hidden gems and critically acclaimed films you might have missed.",
     icon: (
       <svg
         className="h-7 w-7"
@@ -28,7 +28,7 @@ const steps = [
     number: "02",
     title: "You receive",
     description:
-      "Every Friday, a beautifully designed email lands in your inbox with our top picks — each with IMDb ratings, trailers, and direct Netflix links.",
+      "Every Friday, a beautifully designed email lands in your inbox with our top picks — each with IMDb ratings, trailers, and a direct link to wherever it's streaming.",
     icon: (
       <svg
         className="h-7 w-7"
@@ -49,7 +49,7 @@ const steps = [
     number: "03",
     title: "You watch",
     description:
-      "Open Netflix, click play, and enjoy a movie you know is worth your time. No more scrolling through thousands of titles wondering what to watch.",
+      "Open the app it's on, hit play, and enjoy a movie you know is worth your time. No more scrolling across a dozen services wondering what to watch.",
     icon: (
       <svg
         className="h-7 w-7"

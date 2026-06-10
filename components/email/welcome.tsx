@@ -35,7 +35,8 @@ export function WelcomeEmail({ email }: WelcomeEmailProps) {
         <h2>You're on the list!</h2>
         <p style={{ color: "#a3a3a3" }}>
           Hey {email}, thanks for subscribing. Every Friday you'll get the best
-          Netflix picks rated on IMDb — curated just for you.
+          high-rated picks from across every streaming service — curated just
+          for you.
         </p>
         <div
           style={{

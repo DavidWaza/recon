@@ -38,7 +38,7 @@ export default function PreviewPage() {
               <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent text-sm font-bold text-white">R</span>
               <h1 className="mt-4 text-2xl font-bold text-zinc-900 sm:text-3xl">This Week&apos;s Top Picks</h1>
               <p className="mt-2 text-sm text-muted">{today}</p>
-              <p className="mx-auto mt-4 max-w-md text-sm text-muted">Curated Netflix films rated 7.0+ on IMDb — hand-picked for your Friday night watch.</p>
+              <p className="mx-auto mt-4 max-w-md text-sm text-muted">Curated films rated 7.0+ on IMDb from across every streaming service — hand-picked for your Friday night watch.</p>
             </header>
             <section>
               {previewMovies.map((movie, index) => (

@@ -7,12 +7,12 @@ const faqs = [
   {
     question: "What is Recon?",
     answer:
-      "Recon is a free weekly newsletter that delivers curated, high-rated Netflix movie recommendations straight to your inbox every Friday. We cross-reference IMDb ratings to ensure you only get quality picks worth your time.",
+      "Recon is a free weekly newsletter that delivers curated, high-rated movie recommendations straight to your inbox every Friday — from across every major streaming service. We cross-reference IMDb ratings so you only get quality picks worth your time, and we tell you exactly where to watch each one.",
   },
   {
     question: "How much does Recon cost?",
     answer:
-      "Recon is completely free. There are no premium tiers, hidden fees, or paywalls. We're movie enthusiasts who built this service because we believe everyone deserves great movie nights.",
+      "The weekly newsletter is free to join — no fee to start getting great picks. We're movie enthusiasts who built this because we believe everyone deserves better movie nights.",
   },
   {
     question: "How often will I receive emails?",
@@ -20,14 +20,14 @@ const faqs = [
       "Once per week, every Friday. We respect your inbox — you'll never receive more than one email per week from us, and we will never send you spam or promotional content.",
   },
   {
-    question: "Do I need a Netflix subscription?",
+    question: "Which streaming services do I need?",
     answer:
-      "Yes, Recon is designed specifically for Netflix subscribers. All our recommendations are movies currently available on Netflix, with direct links so you can start watching immediately.",
+      "Whatever you already have. Recon spans Netflix, Prime Video, Max, Apple TV+ and more — each pick tells you exactly where it's streaming, with a direct link so you can start watching immediately on the service it's on.",
   },
   {
     question: "How do you select the movies?",
     answer:
-      "We combine IMDb community ratings with human curation. Our team watches and evaluates films to ensure each recommendation delivers on storytelling quality, not just popularity metrics.",
+      "We combine IMDb community ratings with human curation across every major streaming service. Our team watches and evaluates films to ensure each recommendation delivers on storytelling quality, not just popularity metrics.",
   },
   {
     question: "Can I unsubscribe at any time?",

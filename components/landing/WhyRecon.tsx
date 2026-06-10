@@ -14,9 +14,9 @@ const features = [
     ),
   },
   {
-    title: "Netflix Available",
+    title: "Streams Where You Already Are",
     description:
-      "We exclusively recommend movies currently streaming on Netflix. Every pick comes with a direct link so you can start watching immediately.",
+      "We tell you exactly where each pick is streaming — Netflix, Prime Video, Max, Apple TV+ and more — with a direct link so you can start watching in one tap.",
     icon: (
       <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
@@ -26,7 +26,7 @@ const features = [
   {
     title: "Zero Spam Promise",
     description:
-      "One email per week, every Friday. No promotions, no affiliate links, no data selling. Unsubscribe in one click at any time.",
+      "One email per week, every Friday. No noise, and we'll never sell your data. Unsubscribe in one click at any time.",
     icon: (
       <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
@@ -54,9 +54,9 @@ const features = [
     ),
   },
   {
-    title: "Always Free",
+    title: "Free to Join",
     description:
-      "Recon is completely free. We're movie lovers building this for movie lovers. No premium tiers, no hidden costs, no catches.",
+      "The weekly newsletter is free, full stop. We're movie lovers building this for movie lovers — start getting great picks without paying a thing.",
     icon: (
       <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />

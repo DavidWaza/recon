@@ -3,6 +3,13 @@
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
+import { newsEmailHtml } from "@/lib/emails/news";
+import {
+  cloudinaryConfigured,
+  uploadImageToCloudinary,
+} from "@/services/cloudinary";
+import { SITE_URL } from "@/lib/urls";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface SendResult {
   success: boolean;
@@ -10,341 +17,364 @@ interface SendResult {
   failed: number;
   total: number;
   message: string;
+  error?: string;
 }
 
-export default function SendWaitlistMessagePage() {
+const ADMIN_AUTH = `Bearer ${process.env.NEXT_PUBLIC_ADMIN_SECRET_KEY}`;
+
+export default function AdminNewsPage() {
   const [subject, setSubject] = useState("");
-  const [message, setMessage] = useState("");
-  const [isWeeklyRecommendation, setIsWeeklyRecommendation] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [images, setImages] = useState<string[]>([]);
+  const [showCta, setShowCta] = useState(false);
+  const [ctaText, setCtaText] = useState("Browse this week's picks");
+  const [ctaUrl, setCtaUrl] = useState(SITE_URL);
+  const [testEmail, setTestEmail] = useState("");
+
+  const [uploading, setUploading] = useState(false);
+  const [busy, setBusy] = useState<null | "test" | "all">(null);
   const [result, setResult] = useState<SendResult | null>(null);
-  const [showPreview, setShowPreview] = useState(false);
+  const [showPreview, setShowPreview] = useState(true);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  const handleSend = async () => {
-    if (!subject.trim()) {
-      toast.error("Subject is required");
+  const previewHtml = newsEmailHtml({
+    title: title.trim() || subject.trim() || "Your headline here",
+    body: body.trim() || "Your message will appear here…",
+    images,
+    ctaText: showCta ? ctaText.trim() || undefined : undefined,
+    ctaUrl: showCta ? ctaUrl.trim() || undefined : undefined,
+  });
+
+  const handleFiles = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    if (!cloudinaryConfigured) {
+      toast.error(
+        "Cloudinary isn't configured. Set NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME and NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET.",
+      );
       return;
     }
 
-    if (!message.trim()) {
-      toast.error("Message is required");
-      return;
-    }
-
-    setLoading(true);
-    setResult(null);
-
+    setUploading(true);
     try {
-      const { data } = await axios.post("/api/admin/send-to-waitlist", {
-        subject,
-        message,
-        isWeeklyRecommendation,
-      });
+      const uploaded: string[] = [];
+      for (const file of Array.from(files)) {
+        if (!file.type.startsWith("image/")) continue;
+        const url = await uploadImageToCloudinary(file);
+        uploaded.push(url);
+      }
+      if (uploaded.length) {
+        setImages((prev) => [...prev, ...uploaded]);
+        toast.success(
+          `Uploaded ${uploaded.length} image${uploaded.length > 1 ? "s" : ""}`,
+        );
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeImage = (index: number) =>
+    setImages((prev) => prev.filter((_, i) => i !== index));
+
+  const send = async (mode: "test" | "all") => {
+    if (!subject.trim()) return toast.error("Subject is required");
+    if (!body.trim()) return toast.error("Message is required");
+    if (mode === "test" && !testEmail.trim())
+      return toast.error("Enter a test email address");
+
+    setBusy(mode);
+    setResult(null);
+    try {
+      const { data } = await axios.post<SendResult>(
+        "/api/admin/send-to-waitlist",
+        {
+          mode,
+          subject,
+          title,
+          body,
+          images,
+          ctaText: showCta ? ctaText : undefined,
+          ctaUrl: showCta ? ctaUrl : undefined,
+          testEmail: mode === "test" ? testEmail.trim() : undefined,
+        },
+        { headers: { Authorization: ADMIN_AUTH } },
+      );
 
       setResult(data);
-
       if (data.success) {
-        toast.success(
-          `Email sent to ${data.sent} users! ${data.failed > 0 ? `(${data.failed} failed)` : ""}`,
-        );
-        setSubject("");
-        setMessage("");
-        setIsWeeklyRecommendation(false);
+        toast.success(data.message);
+        if (mode === "all") {
+          setSubject("");
+          setTitle("");
+          setBody("");
+          setImages([]);
+        }
       } else {
-        toast.error(data.error || "Failed to send emails");
+        toast.error(data.error || "Failed to send");
       }
     } catch (error) {
-      console.error("Error sending message:", error);
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data?.error || "Failed to send message");
-      } else {
-        toast.error("An unexpected error occurred");
-      }
+      const msg = axios.isAxiosError(error)
+        ? (error.response?.data?.error ?? "Failed to send")
+        : "An unexpected error occurred";
+      toast.error(msg);
+      setResult({ success: false, sent: 0, failed: 0, total: 0, message: msg, error: msg });
     } finally {
-      setLoading(false);
+      setBusy(null);
     }
   };
 
-  const generatePreview = () => {
-    return `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <style>
-          @media only screen and (max-width: 600px) {
-            .container { width: 100% !important; }
-            h1 { font-size: 28px !important; }
-            .message { font-size: 15px !important; }
-          }
-        </style>
-      </head>
-      <body style="margin: 0; padding: 0; background-color: #f5f5f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
-        <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 32px 16px;">
-          <tr>
-            <td align="center">
-              <table class="container" width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.07); background-color: #ffffff;">
-
-                <!-- Header -->
-                <tr>
-                  <td style="background-color: #1b1f3b; padding: 48px 40px; text-align: center;">
-                    <h1 style="margin: 0; font-size: 32px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">
-                      🎬 ${isWeeklyRecommendation ? "This Week's Picks" : "recon"}
-                    </h1>
-                    <p style="margin: 12px 0 0; font-size: 16px; color: rgba(255,255,255,0.85); font-weight: 400;">
-                      ${isWeeklyRecommendation ? "Your curated weekly selections" : ""}
-                    </p>
-                  </td>
-                </tr
-
-                <!-- Body -->
-                <tr>
-                  <td style="background-color: #ffffff; padding: 48px 40px;">
-                    <div class="message" style="margin: 0 0 36px; font-size: 16px; color: #2a2a2a; line-height: 1.8;">
-                      ${message}
-                    </div>
-
-                    <!-- CTA Button -->
-                    <table width="100%" cellpadding="0" cellspacing="0" style="margin: 40px 0;">
-                      <tr>
-                        <td align="center">
-                          <a href="https://recon-ruby.vercel.app" style="display: inline-block; background-color: #1b1f3b; color: #ffffff; padding: 14px 36px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 15px; letter-spacing: 0.3px; box-shadow: 0 4px 12px rgba(27,31,59,0.3);">
-                            Explore Picks
-                          </a>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-
-                <!-- Footer -->
-                <tr>
-                  <td style="background-color: #f8f9fb; padding: 32px 40px; border-top: 1px solid #e5e5e5; text-align: center;">
-                    <p style="margin: 0; font-size: 12px; color: #999999;">
-                      © 2026 recon. All rights reserved.
-                    </p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-      </body>
-      </html>
-    `;
+  const requestBroadcast = () => {
+    if (!subject.trim()) return toast.error("Subject is required");
+    if (!body.trim()) return toast.error("Message is required");
+    setShowConfirmModal(true);
   };
 
+  const inputClass =
+    "w-full rounded-xl border border-border bg-black/30 px-4 py-3 text-sm text-white placeholder:text-muted focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20";
+
   return (
-    <div className="min-h-screen bg-linear-to-b from-black via-neutral-950 to-black p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-background p-6 sm:p-8">
+      <ConfirmDialog
+        open={showConfirmModal}
+        title="Send to all subscribers?"
+        description="This will email every active subscriber immediately. Send a test to yourself first if you haven't reviewed the message yet."
+        confirmLabel="Yes, send to all"
+        onConfirm={() => {
+          setShowConfirmModal(false);
+          void send("all");
+        }}
+        onCancel={() => setShowConfirmModal(false)}
+        loading={busy === "all"}
+      />
+      <div className="mx-auto max-w-7xl">
         {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold text-white mb-2">
-            Send to Waitlist
-          </h1>
-          <p className="text-neutral-400 text-lg">
-            Compose and send messages or weekly movie recommendations to all
-            registered waitlist users.
+        <div className="mb-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">
+            Admin
+          </p>
+          <h1 className="mt-1 text-3xl font-bold text-white">News &amp; Updates</h1>
+          <p className="mt-1 text-sm text-muted">
+            Compose an announcement, upload images, send a test to yourself, then
+            broadcast to every active subscriber.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Compose Area */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Subject Input */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
-              <label className="block text-sm font-semibold text-white mb-3">
-                Subject Line
-              </label>
+        <div className="grid gap-8 lg:grid-cols-[1fr_minmax(360px,520px)]">
+          {/* Compose */}
+          <div className="space-y-5">
+            <Field label="Subject line">
               <input
-                type="text"
+                className={inputClass}
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                placeholder="e.g., 🎬 This Week's Top Picks or New Movies Worth Watching"
-                className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:border-red-500 transition"
+                placeholder="The inbox subject your subscribers see"
               />
-            </div>
+            </Field>
 
-            {/* Message Textarea */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
-              <label className="block text-sm font-semibold text-white mb-3">
-                Message
-              </label>
+            <Field label="Headline" hint="Shown inside the email. Defaults to the subject if blank.">
+              <input
+                className={inputClass}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Big news this week"
+              />
+            </Field>
+
+            <Field label="Message" hint={`${body.length} characters · blank lines start new paragraphs`}>
               <textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Write your message here. Include movie recommendations, descriptions, or any special announcement..."
-                rows={10}
-                className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:border-red-500 transition resize-none"
+                className={`${inputClass} resize-none`}
+                rows={9}
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                placeholder="Write your update here…"
               />
-              <div className="mt-2 text-xs text-neutral-500">
-                {message.length} characters
-              </div>
-            </div>
+            </Field>
 
-            {/* Options */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
-              <label className="flex items-center gap-3 cursor-pointer">
+            {/* Images */}
+            <Field label="Images" hint="Uploaded to Cloudinary and embedded in the email, in order.">
+              <div className="rounded-xl border border-dashed border-border bg-black/20 p-4">
+                <label className="flex cursor-pointer flex-col items-center justify-center gap-2 py-4 text-center">
+                  <span className="text-sm font-medium text-white">
+                    {uploading ? "Uploading…" : "Click to upload images"}
+                  </span>
+                  <span className="text-xs text-muted">PNG, JPG, GIF · multiple allowed</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    disabled={uploading}
+                    onChange={(e) => {
+                      handleFiles(e.target.files);
+                      e.target.value = "";
+                    }}
+                    className="hidden"
+                  />
+                </label>
+
+                {images.length > 0 && (
+                  <div className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-4">
+                    {images.map((url, i) => (
+                      <div key={url} className="group relative overflow-hidden rounded-lg ring-1 ring-border">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={url} alt="" className="h-20 w-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(i)}
+                          aria-label="Remove image"
+                          className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-black/70 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Field>
+
+            {/* CTA */}
+            <div className="rounded-xl border border-border bg-card p-5">
+              <label className="flex cursor-pointer items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm font-semibold text-white">
+                    Include call-to-action button
+                  </p>
+                  <p className="mt-1 text-xs text-muted">
+                    Add a &ldquo;Browse this week&apos;s picks&rdquo; button at
+                    the bottom of the email.
+                  </p>
+                </div>
                 <input
                   type="checkbox"
-                  checked={isWeeklyRecommendation}
-                  onChange={(e) => setIsWeeklyRecommendation(e.target.checked)}
-                  className="w-5 h-5 accent-red-600"
+                  checked={showCta}
+                  onChange={(e) => setShowCta(e.target.checked)}
+                  className="h-5 w-5 shrink-0 rounded border-border bg-black/30 text-accent focus:ring-accent/30"
                 />
-                <span className="text-white font-medium">
-                  Mark as Weekly Recommendation
-                </span>
               </label>
-              <p className="text-neutral-500 text-sm mt-2 ml-8">
-                This will update the email header to reflect a weekly picks
-                message
-              </p>
+
+              {showCta && (
+                <div className="mt-5 grid gap-5 sm:grid-cols-2">
+                  <Field label="Button text">
+                    <input
+                      className={inputClass}
+                      value={ctaText}
+                      onChange={(e) => setCtaText(e.target.value)}
+                      placeholder="Browse this week's picks"
+                    />
+                  </Field>
+                  <Field label="Button link">
+                    <input
+                      className={inputClass}
+                      value={ctaUrl}
+                      onChange={(e) => setCtaUrl(e.target.value)}
+                      placeholder={SITE_URL}
+                    />
+                  </Field>
+                </div>
+              )}
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex gap-4">
+            {/* Test + Send */}
+            <div className="rounded-xl border border-border bg-card p-5">
+              <p className="text-sm font-semibold text-white">Test before you broadcast</p>
+              <p className="mt-1 text-xs text-muted">
+                Send this exact email to one address first. Nothing goes to
+                subscribers until you hit broadcast.
+              </p>
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                <input
+                  type="email"
+                  className={inputClass}
+                  value={testEmail}
+                  onChange={(e) => setTestEmail(e.target.value)}
+                  placeholder="you@email.com"
+                />
+                <button
+                  type="button"
+                  onClick={() => send("test")}
+                  disabled={busy !== null}
+                  className="shrink-0 rounded-full border border-accent/40 bg-accent/10 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent/20 disabled:opacity-50"
+                >
+                  {busy === "test" ? "Sending…" : "Send test to myself"}
+                </button>
+              </div>
+
               <button
-                onClick={() => setShowPreview(!showPreview)}
-                disabled={!subject.trim() || !message.trim()}
-                className="flex-1 px-6 py-3 bg-neutral-800 hover:bg-neutral-700 disabled:bg-neutral-900 disabled:text-neutral-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition"
+                type="button"
+                onClick={requestBroadcast}
+                disabled={busy !== null}
+                className="mt-4 w-full rounded-full bg-accent px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-accent/25 transition-colors hover:bg-accent-hover disabled:opacity-50"
               >
-                {showPreview ? "Hide Preview" : "Preview Email"}
+                {busy === "all" ? "Broadcasting…" : "Send to all subscribers"}
               </button>
-              <button
-                onClick={handleSend}
-                disabled={loading || !subject.trim() || !message.trim()}
-                className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-neutral-700 disabled:text-neutral-500 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition"
-              >
-                {loading ? "Sending..." : "Send to All Users"}
-              </button>
+
+              {result && (
+                <div
+                  className={`mt-4 rounded-lg border p-3 text-sm ${
+                    result.success
+                      ? "border-success/30 bg-success/10 text-success"
+                      : "border-red-500/30 bg-red-500/10 text-red-400"
+                  }`}
+                >
+                  {result.success
+                    ? `✅ ${result.message}`
+                    : `❌ ${result.error ?? result.message}`}
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Sidebar - Stats & Info */}
-          <div className="space-y-6">
-            {/* Results */}
-            {result && (
-              <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
-                <h3 className="text-lg font-bold text-white mb-4">
-                  Send Results
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-neutral-400 text-xs uppercase tracking-wide">
-                      Successful
-                    </p>
-                    <p className="text-3xl font-bold text-green-500 mt-1">
-                      {result.sent}
-                    </p>
-                  </div>
-                  {result.failed > 0 && (
-                    <div>
-                      <p className="text-neutral-400 text-xs uppercase tracking-wide">
-                        Failed
-                      </p>
-                      <p className="text-3xl font-bold text-red-500 mt-1">
-                        {result.failed}
-                      </p>
-                    </div>
-                  )}
-                  <div className="pt-4 border-t border-neutral-800">
-                    <p className="text-neutral-400 text-xs uppercase tracking-wide">
-                      Total
-                    </p>
-                    <p className="text-3xl font-bold text-white mt-1">
-                      {result.total}
-                    </p>
-                  </div>
-                </div>
+          {/* Preview */}
+          <div className="lg:sticky lg:top-8 lg:self-start">
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
+                Live preview
+              </p>
+              <button
+                type="button"
+                onClick={() => setShowPreview((s) => !s)}
+                className="text-xs text-muted transition-colors hover:text-white"
+              >
+                {showPreview ? "Hide" : "Show"}
+              </button>
+            </div>
+            {showPreview && (
+              <div className="overflow-hidden rounded-xl border border-border bg-white">
+                <iframe
+                  srcDoc={previewHtml}
+                  title="Email preview"
+                  className="h-[680px] w-full border-0"
+                />
               </div>
             )}
-
-            {/* Tips */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
-              <h3 className="text-lg font-bold text-white mb-4">Tips</h3>
-              <ul className="space-y-3 text-sm text-neutral-400">
-                <li className="flex gap-2">
-                  <span className="text-red-500 font-bold shrink-0">•</span>
-                  <span>Use engaging subject lines to improve open rates</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-red-500 font-bold shrink-0">•</span>
-                  <span>Keep messages concise and scannable</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-red-500 font-bold shrink-0">•</span>
-                  <span>Include specific movie recommendations</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-red-500 font-bold shrink-0">•</span>
-                  <span>Preview before sending to all users</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Template Suggestions */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
-              <h3 className="text-lg font-bold text-white mb-4">
-                Quick Templates
-              </h3>
-              <button
-                onClick={() => {
-                  setSubject("🎬 This Week's Top Picks");
-                  setMessage(
-                    "We've curated this week's must-watch movies just for you. From thrilling action flicks to heartwarming dramas, there's something for everyone. Check them out and let us know your favorites!",
-                  );
-                  setIsWeeklyRecommendation(true);
-                }}
-                className="w-full mb-3 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white text-sm rounded transition text-left"
-              >
-                Weekly Picks Template
-              </button>
-              <button
-                onClick={() => {
-                  setSubject("🎬 New Additions to Our Collection");
-                  setMessage(
-                    "We've just added some amazing new titles! These hidden gems are waiting for you. Discover what's new and join the conversation.",
-                  );
-                  setIsWeeklyRecommendation(false);
-                }}
-                className="w-full px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white text-sm rounded transition text-left"
-              >
-                New Additions Template
-              </button>
-            </div>
           </div>
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* Preview Modal */}
-      {showPreview && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-neutral-900 border border-neutral-800 rounded-lg max-w-2xl w-full max-h-[85vh] overflow-y-auto">
-            {/* Modal Header */}
-            <div className="sticky top-0 bg-neutral-900 border-b border-neutral-800 px-6 py-4 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-white">Email Preview</h2>
-              <button
-                onClick={() => setShowPreview(false)}
-                className="text-neutral-400 hover:text-white text-2xl"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Modal Body */}
-            <div className="p-6">
-              <div className="bg-white rounded-lg overflow-hidden">
-                <iframe
-                  srcDoc={generatePreview()}
-                  title="Email Preview"
-                  className="w-full h-96 border-0"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+function Field({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <div className="mb-2 flex items-baseline justify-between">
+        <label className="text-xs font-semibold uppercase tracking-wider text-muted">
+          {label}
+        </label>
+        {hint && <span className="text-[11px] text-muted/70">{hint}</span>}
+      </div>
+      {children}
     </div>
   );
 }

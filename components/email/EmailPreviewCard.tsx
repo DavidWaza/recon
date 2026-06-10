@@ -17,9 +17,9 @@ export function EmailPreviewCard({ movie, index }: EmailPreviewCardProps) {
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="font-semibold text-zinc-900">{movie.title}</h3>
           <RatingBadge rating={movie.imdbRating} size="sm" />
-          {movie.netflixAvailable && (
-            <span className="rounded bg-[#E50914] px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
-              Netflix
+          {movie.watchUrl && (
+            <span className="rounded bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold uppercase text-accent ring-1 ring-accent/30">
+              Streaming
             </span>
           )}
         </div>
@@ -29,7 +29,7 @@ export function EmailPreviewCard({ movie, index }: EmailPreviewCardProps) {
         <div className="mt-3">
           <a href={movie.watchUrl} target="_blank" rel="noopener noreferrer">
             <CTAButton variant="primary" size="sm" type="button">
-              Watch on Netflix
+              Where to watch
             </CTAButton>
           </a>
         </div>
