@@ -1,17 +1,20 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { sendEmail } from "@/lib/email";
-import { newsEmailHtml } from "@/lib/emails/news";
+import { newsEmailHtml, parseStepsFromText } from "@/lib/emails/news";
 
 type Subscriber = { id: string; email: string; unsubscribe_token?: string };
 
 interface BroadcastRequest {
   subject: string;
+  kicker?: string;
   title?: string;
   body: string;
+  stepsText?: string;
   images?: string[];
   ctaText?: string;
   ctaUrl?: string;
+  disclaimer?: string;
   /** "test" sends only to `testEmail`; "all" sends to every subscriber. */
   mode?: "test" | "all";
   testEmail?: string;
@@ -35,11 +38,14 @@ export async function POST(req: Request) {
 
   const {
     subject,
+    kicker,
     title,
     body,
+    stepsText,
     images = [],
     ctaText,
     ctaUrl,
+    disclaimer,
     mode = "all",
     testEmail,
   } = payload;
@@ -56,10 +62,13 @@ export async function POST(req: Request) {
   const renderHtml = (unsubscribeToken?: string) =>
     newsEmailHtml({
       title: headline,
+      kicker,
       body,
+      steps: parseStepsFromText(stepsText ?? ""),
       images,
       ctaText,
       ctaUrl,
+      disclaimer,
       unsubscribeToken,
     });
 

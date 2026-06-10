@@ -3,7 +3,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
-import { newsEmailHtml } from "@/lib/emails/news";
+import { newsEmailHtml, parseStepsFromText } from "@/lib/emails/news";
 import {
   cloudinaryConfigured,
   uploadImageToCloudinary,
@@ -24,8 +24,10 @@ const ADMIN_AUTH = `Bearer ${process.env.NEXT_PUBLIC_ADMIN_SECRET_KEY}`;
 
 export default function AdminNewsPage() {
   const [subject, setSubject] = useState("");
+  const [kicker, setKicker] = useState("");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [stepsText, setStepsText] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [showCta, setShowCta] = useState(false);
   const [ctaText, setCtaText] = useState("Browse this week's picks");
@@ -38,10 +40,16 @@ export default function AdminNewsPage() {
   const [showPreview, setShowPreview] = useState(true);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
+  const resolvedTitle =
+    title.trim() || subject.trim() || "Your headline here";
+  const resolvedSteps = parseStepsFromText(stepsText);
+
   const previewHtml = newsEmailHtml({
-    title: title.trim() || subject.trim() || "Your headline here",
+    title: resolvedTitle,
+    kicker: kicker.trim() || undefined,
     body: body.trim() || "Your message will appear here…",
     images,
+    steps: resolvedSteps,
     ctaText: showCta ? ctaText.trim() || undefined : undefined,
     ctaUrl: showCta ? ctaUrl.trim() || undefined : undefined,
   });
@@ -93,8 +101,10 @@ export default function AdminNewsPage() {
         {
           mode,
           subject,
+          kicker,
           title,
           body,
+          stepsText,
           images,
           ctaText: showCta ? ctaText : undefined,
           ctaUrl: showCta ? ctaUrl : undefined,
@@ -174,12 +184,24 @@ export default function AdminNewsPage() {
               />
             </Field>
 
-            <Field label="Headline" hint="Shown inside the email. Defaults to the subject if blank.">
+            <Field label="Eyebrow" hint="Optional · small orange label above headline">
+              <input
+                className={inputClass}
+                value={kicker}
+                onChange={(e) => setKicker(e.target.value)}
+                placeholder="A QUICK FAVOR"
+              />
+            </Field>
+
+            <Field
+              label="Headline"
+              hint="Wrap words in **asterisks** for orange accent · defaults to subject"
+            >
               <input
                 className={inputClass}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Big news this week"
+                placeholder="Help us get to **know you.**"
               />
             </Field>
 
@@ -190,6 +212,19 @@ export default function AdminNewsPage() {
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
                 placeholder="Write your update here…"
+              />
+            </Field>
+
+            <Field
+              label="Numbered steps"
+              hint="Optional · blank line between steps · first line = title"
+            >
+              <textarea
+                className={`${inputClass} resize-none`}
+                rows={6}
+                value={stepsText}
+                onChange={(e) => setStepsText(e.target.value)}
+                placeholder={`Your favorite genres\nCheck the genres you reach for most.\n\nWhat's not for you\nSo we never recommend something you'd skip.`}
               />
             </Field>
 

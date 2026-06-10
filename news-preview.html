@@ -1,92 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="supported-color-schemes" content="light dark" />
+  <title>A quick **favor** from RECON</title>
+  <style>
+    /* Opt in to dark mode so clients render our navy design as-authored
+       instead of force-inverting it (which broke the white logo box). */
+    :root {
+      color-scheme: light dark;
+      supported-color-schemes: light dark;
+    }
+    @media only screen and (max-width: 600px) {
+      .shell-container { width: 100% !important; }
+      .shell-body { padding-left: 24px !important; padding-right: 24px !important; }
+      .shell-logo-pad { padding-left: 16px !important; padding-right: 16px !important; }
+      .shell-h1 { font-size: 26px !important; }
+    }
+    /* Lock the palette for clients that still force dark mode. */
+    @media (prefers-color-scheme: dark) {
+      .dm-bg { background-color: #1B2240 !important; }
+      .dm-logo-box { background-color: #FFFFFF !important; }
+      .dm-card { background-color: #243055 !important; }
+      .dm-white { color: #FFFFFF !important; }
+      .dm-text { color: #E8ECF4 !important; }
+      .dm-muted { color: #8B95AD !important; }
+      .dm-muted-dark { color: #6B7590 !important; }
+    }
+    /* Outlook.com dark mode (ogsc = foreground, ogsb = background). */
+    [data-ogsb] .dm-bg { background-color: #1B2240 !important; }
+    [data-ogsb] .dm-logo-box { background-color: #FFFFFF !important; }
+    [data-ogsb] .dm-card { background-color: #243055 !important; }
+    [data-ogsc] .dm-white { color: #FFFFFF !important; }
+    [data-ogsc] .dm-text { color: #E8ECF4 !important; }
+    [data-ogsc] .dm-muted { color: #8B95AD !important; }
+    [data-ogsc] .dm-muted-dark { color: #6B7590 !important; }
+  </style>
+</head>
+<body class="dm-bg" style="margin:0;padding:0;background-color:#1B2240;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" class="dm-bg" style="background-color:#1B2240;">
+    <tr>
+      <td align="center" style="padding:0;">
 
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>We just shipped personalized picks</title>
-      <style>
-        @media only screen and (max-width: 600px) {
-          .container { width: 100% !important; }
-          .h1 { font-size: 24px !important; }
-        }
-      </style>
-    </head>
-    <body style="margin:0;padding:0;background-color:#0a0a0a;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-      <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#0a0a0a;">
+        <!-- Top accent bar -->
+        <table class="shell-container" width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;width:100%;">
+          <tr>
+            <td style="height:4px;background-color:#E8913A;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+        </table>
+
+        <!-- Logo header -->
+        <table class="shell-container" width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;width:100%;">
+          <tr>
+            <td class="shell-logo-pad" align="center" style="padding:36px 40px 28px;">
+              <table cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                  <td class="dm-logo-box" style="background-color:#FFFFFF;border-radius:14px;padding:14px 32px;">
+                    <img src="https://recon.com.ng/logo.png" alt="RECON" width="168" height="auto"
+                      style="display:block;border:0;outline:none;text-decoration:none;max-width:168px;height:auto;" />
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+
+        <!-- Dynamic body -->
+        <table class="shell-container" width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;width:100%;">
+          <tr>
+            <td class="shell-body" style="padding:0 48px 40px;">
+              
+    <p style="margin:0 0 18px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#E8913A;text-align:center;">
+        &mdash; A QUICK FAVOR &mdash;
+      </p>
+    
+    <h1 class="shell-h1" style="margin:0 0 28px;font-size:34px;font-weight:800;color:#FFFFFF;line-height:1.2;text-align:center;letter-spacing:-0.5px;">
+      A quick <span style="color:#E8913A;">favor</span> from RECON
+    </h1>
+    
+    <p style="margin:0 0 20px;font-size:15px;color:#E8ECF4;line-height:1.75;text-align:center;">Hey there,</p><p style="margin:0 0 20px;font-size:15px;color:#E8ECF4;line-height:1.75;text-align:center;">We just shipped personalized picks — your Friday email now learns from what you love.</p><p style="margin:0 0 20px;font-size:15px;color:#E8ECF4;line-height:1.75;text-align:center;">Thanks for being here.</p>
+    <div style="margin:8px 0 24px;">
+      <table width="100%" cellpadding="0" cellspacing="0" role="presentation"
+        style="margin-bottom:14px;border-radius:14px;background-color:#243055;">
         <tr>
-          <td align="center" style="padding:40px 16px;">
-            <table class="container" width="600" cellpadding="0" cellspacing="0" role="presentation"
-              style="max-width:600px;width:100%;border-radius:16px;overflow:hidden;border:1px solid #1f1f1f;background-color:#141414;">
-
-              <!-- Film strip top -->
-              <tr><td style="padding:0;line-height:0;font-size:0;">
-    <div style="height:24px;background-color:#111118;background-image:repeating-linear-gradient(90deg, #0a0a0a 0, #0a0a0a 18px, transparent 18px, transparent 30px);"></div></td></tr>
-
-              <!-- Header -->
-              <tr>
-                <td style="background-color:#111118;padding:34px 40px 30px;">
-                  <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
-                    <tr>
-                      <td valign="bottom">
-                        <p style="margin:0 0 6px;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#6366f1;">
-                          News &amp; Updates
-                        </p>
-                        <h1 class="h1" style="margin:0;font-size:28px;font-weight:800;color:#ffffff;line-height:1.2;letter-spacing:-0.5px;">
-                          We just shipped personalized picks
-                        </h1>
-                      </td>
-                      <td valign="bottom" align="right" style="white-space:nowrap;">
-                        <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.4);letter-spacing:1px;">WED, JUN 10</p>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-
-              <!-- Film strip bottom of header -->
-              <tr><td style="padding:0;line-height:0;font-size:0;">
-    <div style="height:24px;background-color:#0a0a0a;background-image:repeating-linear-gradient(90deg, #111118 0, #111118 18px, transparent 18px, transparent 30px);"></div></td></tr>
-
-              <!-- Body -->
-              <tr>
-                <td style="background-color:#141414;padding:32px 40px;">
-                  
-      <img src="https://res.cloudinary.com/dgbl43ljm/image/upload/v1779293269/rencom/forgotten_vyobdh.jpg" alt="" style="display:block;width:100%;max-width:520px;height:auto;border-radius:12px;margin:0 auto 18px;border:1px solid #262626;" />
-                  <p style="margin:0 0 18px;font-size:15px;color:#cccccc;line-height:1.8;">Big news this week.</p><p style="margin:0 0 18px;font-size:15px;color:#cccccc;line-height:1.8;">Your Friday email now learns from what you love. Tap the thumbs on any pick and next week gets sharper.</p><p style="margin:0 0 18px;font-size:15px;color:#cccccc;line-height:1.8;">Thanks for being here.</p>
-                  
-      <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-top:14px;">
-        <tr>
-          <td align="center">
-            <a href="https://recon.com.ng"
-              style="display:inline-block;background-color:#4f46e5;color:#ffffff;padding:14px 36px;text-decoration:none;border-radius:8px;font-weight:700;font-size:14px;letter-spacing:0.5px;">
-              See what changed &rarr;
-            </a>
+          <td width="64" valign="top" style="padding:22px 0 22px 22px;">
+            <div style="width:40px;height:40px;border-radius:50%;background-color:#151C34;text-align:center;line-height:40px;font-size:20px;font-weight:800;color:#E8913A;">
+              1
+            </div>
+          </td>
+          <td valign="top" style="padding:22px 22px 22px 8px;">
+            <p style="margin:0 0 6px;font-size:16px;font-weight:700;color:#FFFFFF;line-height:1.35;">
+              Open the email
+            </p>
+            <p style="margin:0;font-size:14px;color:#8B95AD;line-height:1.65;">
+              Tap any pick to rate it.
+            </p>
           </td>
         </tr>
       </table>
-                </td>
-              </tr>
-
-              <!-- Footer -->
-              <tr>
-                <td style="background-color:#0f0f0f;padding:0;">
-                  <div style="height:1px;border-top:1px dashed #2a2a2a;font-size:0;line-height:0;">&nbsp;</div>
-                  <div style="padding:20px 40px 24px;text-align:center;">
-                    <p style="margin:0 0 8px;font-size:11px;color:#3a3a3a;">
-                      &copy; 2026 recon. You're receiving this because you subscribed at <strong style="color:#555;">recon.com.ng</strong>
-                    </p>
-                    <p style="margin:0;font-size:11px;">
-                      <a href="https://recon.com.ng/api/unsubscribe?token=demo-token" style="color:#6b6b6b;text-decoration:underline;">Unsubscribe</a>
-                    </p>
-                  </div>
-                </td>
-              </tr>
-
-            </table>
+      <table width="100%" cellpadding="0" cellspacing="0" role="presentation"
+        style="margin-bottom:14px;border-radius:14px;background-color:#243055;">
+        <tr>
+          <td width="64" valign="top" style="padding:22px 0 22px 22px;">
+            <div style="width:40px;height:40px;border-radius:50%;background-color:#151C34;text-align:center;line-height:40px;font-size:20px;font-weight:800;color:#E8913A;">
+              2
+            </div>
+          </td>
+          <td valign="top" style="padding:22px 22px 22px 8px;">
+            <p style="margin:0 0 6px;font-size:16px;font-weight:700;color:#FFFFFF;line-height:1.35;">
+              Tell us your taste
+            </p>
+            <p style="margin:0;font-size:14px;color:#8B95AD;line-height:1.65;">
+              Thumbs up or down on each pick.
+            </p>
           </td>
         </tr>
-      </table>
-    </body>
-    </html>
-  
+      </table></div>
+    
+    <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-top:8px;">
+      <tr>
+        <td align="center" style="padding-top:8px;">
+          <a href="https://recon.com.ng"
+            style="display:inline-block;background-color:#E8913A;color:#FFFFFF;padding:16px 44px;text-decoration:none;border-radius:999px;font-weight:700;font-size:15px;letter-spacing:0.2px;">
+            See what's new
+          </a>
+        </td>
+      </tr>
+    </table>
+    <p style="margin:24px 0 0;font-size:12px;color:#8B95AD;line-height:1.7;text-align:center;">Your answers are private and only used to improve your recommendations. <a href="https://recon.com.ng/privacy" style="color:#E8913A;text-decoration:underline;">Privacy Policy</a></p>
+            </td>
+          </tr>
+        </table>
+
+        <!-- Static footer -->
+        <table class="shell-container" width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;width:100%;">
+          <tr>
+            <td style="padding:0 48px 40px;">
+              <div style="height:1px;background-color:#2A3658;font-size:0;line-height:0;">&nbsp;</div>
+              <div style="padding-top:28px;text-align:center;">
+                <p class="dm-muted-dark" style="margin:0 0 10px;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#6B7590;">
+                  RECON &middot; YOUR MOVIE COMPANION
+                </p>
+                <p class="dm-muted-dark" style="margin:0 0 14px;font-size:11px;color:#6B7590;line-height:1.6;">
+                  You&rsquo;re receiving this because you have a RECON account.
+                </p>
+                <p class="dm-muted-dark" style="margin:0;font-size:11px;color:#6B7590;">
+                  <a href="https://recon.com.ng/api/unsubscribe?token=demo-token" class="dm-muted" style="color:#8B95AD;text-decoration:underline;">Unsubscribe</a>
+                  &nbsp;&middot;&nbsp;
+                  <a href="https://recon.com.ng" class="dm-muted" style="color:#8B95AD;text-decoration:underline;">Email preferences</a>
+                </p>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

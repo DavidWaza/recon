@@ -1,170 +1,212 @@
-import { SITE_URL, unsubscribeUrl } from "@/lib/urls";
+import { SITE_URL } from "@/lib/urls";
+import {
+  RECON_EMAIL,
+  escapeHtml,
+  reconEmailShell,
+  titleWithAccent,
+} from "@/lib/emails/shell";
+
+export type NewsEmailStep = {
+  title: string;
+  description: string;
+};
 
 export type NewsEmailInput = {
-  /** Headline shown in the email header. */
+  /** Main headline. Wrap text in **double asterisks** for orange accent. */
   title: string;
+  /** Small eyebrow above the headline, e.g. "A QUICK FAVOR". */
+  kicker?: string;
   /** Plain-text body. Blank lines become paragraphs; single newlines become breaks. */
   body: string;
   /** Public image URLs (e.g. Cloudinary) rendered full-width, in order. */
   images?: string[];
+  /** Optional numbered cards (title + description per item). */
+  steps?: NewsEmailStep[];
   ctaText?: string;
   ctaUrl?: string;
+  /** Small print below the CTA button. Supports **Privacy Policy** link via [Privacy Policy](url). */
+  disclaimer?: string;
   unsubscribeToken?: string;
 };
 
-function escapeHtml(text: string) {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
-
-/** Turn admin plain text into safe paragraphs. */
 function bodyToParagraphs(body: string) {
   return body
     .trim()
     .split(/\n{2,}/)
     .map((block) => {
       const inner = escapeHtml(block).replace(/\n/g, "<br/>");
-      return `<p style="margin:0 0 18px;font-size:15px;color:#cccccc;line-height:1.8;">${inner}</p>`;
+      return `<p style="margin:0 0 20px;font-size:15px;color:${RECON_EMAIL.text};line-height:1.75;text-align:center;">${inner}</p>`;
     })
     .join("");
+}
+
+function disclaimerHtml(disclaimer: string) {
+  const linkRe = /\[([^\]]+)\]\(([^)]+)\)/g;
+  let html = "";
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = linkRe.exec(disclaimer)) !== null) {
+    html += escapeHtml(disclaimer.slice(lastIndex, match.index));
+    html += `<a href="${escapeHtml(match[2])}" style="color:${RECON_EMAIL.orange};text-decoration:underline;">${escapeHtml(match[1])}</a>`;
+    lastIndex = match.index + match[0].length;
+  }
+
+  html += escapeHtml(disclaimer.slice(lastIndex));
+
+  return `<p style="margin:24px 0 0;font-size:12px;color:${RECON_EMAIL.muted};line-height:1.7;text-align:center;">${html}</p>`;
+}
+
+function numberedSteps(steps: NewsEmailStep[]) {
+  return steps
+    .filter((step) => step.title.trim())
+    .map((step, index) => {
+      const num = index + 1;
+      return `
+      <table width="100%" cellpadding="0" cellspacing="0" role="presentation"
+        style="margin-bottom:14px;border-radius:14px;background-color:${RECON_EMAIL.navyCard};">
+        <tr>
+          <td width="64" valign="top" style="padding:22px 0 22px 22px;">
+            <div style="width:40px;height:40px;border-radius:50%;background-color:${RECON_EMAIL.navyDeep};text-align:center;line-height:40px;font-size:20px;font-weight:800;color:${RECON_EMAIL.orange};">
+              ${num}
+            </div>
+          </td>
+          <td valign="top" style="padding:22px 22px 22px 8px;">
+            <p style="margin:0 0 6px;font-size:16px;font-weight:700;color:${RECON_EMAIL.white};line-height:1.35;">
+              ${escapeHtml(step.title)}
+            </p>
+            <p style="margin:0;font-size:14px;color:${RECON_EMAIL.muted};line-height:1.65;">
+              ${escapeHtml(step.description)}
+            </p>
+          </td>
+        </tr>
+      </table>`;
+    })
+    .join("");
+}
+
+function imageBlocks(images: string[]) {
+  return images
+    .filter(Boolean)
+    .map(
+      (url) => `
+      <img src="${url}" alt=""
+        style="display:block;width:100%;max-width:504px;height:auto;border-radius:14px;margin:0 auto 20px;border:1px solid ${RECON_EMAIL.divider};" />`,
+    )
+    .join("");
+}
+
+function ctaBlock(ctaText: string, ctaUrl: string) {
+  return `
+    <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-top:8px;">
+      <tr>
+        <td align="center" style="padding-top:8px;">
+          <a href="${ctaUrl}"
+            style="display:inline-block;background-color:${RECON_EMAIL.orange};color:${RECON_EMAIL.white};padding:16px 44px;text-decoration:none;border-radius:999px;font-weight:700;font-size:15px;letter-spacing:0.2px;">
+            ${escapeHtml(ctaText)}
+          </a>
+        </td>
+      </tr>
+    </table>`;
+}
+
+/** Build only the inner body HTML (for custom shells or previews). */
+export function newsEmailBodyHtml({
+  title,
+  kicker,
+  body,
+  images = [],
+  steps = [],
+  ctaText,
+  ctaUrl,
+  disclaimer,
+}: Omit<NewsEmailInput, "unsubscribeToken">) {
+  const kickerBlock = kicker?.trim()
+    ? `<p style="margin:0 0 18px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:${RECON_EMAIL.orange};text-align:center;">
+        &mdash; ${escapeHtml(kicker.trim())} &mdash;
+      </p>`
+    : "";
+
+  const titleBlock = `
+    <h1 class="shell-h1" style="margin:0 0 28px;font-size:34px;font-weight:800;color:${RECON_EMAIL.white};line-height:1.2;text-align:center;letter-spacing:-0.5px;">
+      ${titleWithAccent(title)}
+    </h1>`;
+
+  const stepsBlock =
+    steps.length > 0
+      ? `<div style="margin:8px 0 24px;">${numberedSteps(steps)}</div>`
+      : "";
+
+  const cta =
+    ctaText && ctaUrl ? ctaBlock(ctaText, ctaUrl) : "";
+
+  const disclaimerBlock =
+    disclaimer && disclaimer.trim()
+      ? disclaimerHtml(disclaimer.trim())
+      : "";
+
+  return `
+    ${kickerBlock}
+    ${titleBlock}
+    ${imageBlocks(images)}
+    ${bodyToParagraphs(body)}
+    ${stepsBlock}
+    ${cta}
+    ${disclaimerBlock}`;
 }
 
 /**
  * News & updates broadcast email.
  *
- * Built email-safe (table layout, no flexbox, no inline <svg>) and on-brand
- * (film-strip header, indigo accent) to match the welcome and weekly-picks
- * templates. Pure and dependency-light so it can also be imported into the
- * admin page for a live preview.
+ * Uses the static RECON shell (logo header + footer) with a dynamic body you
+ * can fill from the admin send-message page or any server route.
  */
 export function newsEmailHtml({
   title,
+  kicker,
   body,
   images = [],
+  steps = [],
   ctaText,
   ctaUrl,
+  disclaimer,
   unsubscribeToken,
 }: NewsEmailInput) {
-  const accent = "#6366f1";
-  const accentDeep = "#4f46e5";
+  const resolvedDisclaimer =
+    disclaimer !== undefined
+      ? disclaimer
+      : ctaText && ctaUrl
+        ? `Your answers are private and only used to improve your recommendations. [Privacy Policy](${SITE_URL}/privacy)`
+        : undefined;
 
-  const filmStrip = (bg: string, hole: string) => `
-    <div style="height:24px;background-color:${bg};background-image:repeating-linear-gradient(90deg, ${hole} 0, ${hole} 18px, transparent 18px, transparent 30px);"></div>`;
+  const bodyHtml = newsEmailBodyHtml({
+    title,
+    kicker,
+    body,
+    images,
+    steps,
+    ctaText,
+    ctaUrl,
+    disclaimer: resolvedDisclaimer,
+  });
 
-  const imageBlocks = images
-    .filter(Boolean)
-    .map(
-      (url) => `
-      <img src="${url}" alt="" style="display:block;width:100%;max-width:520px;height:auto;border-radius:12px;margin:0 auto 18px;border:1px solid #262626;" />`,
-    )
-    .join("");
+  return reconEmailShell({
+    pageTitle: title,
+    bodyHtml,
+    unsubscribeToken,
+  });
+}
 
-  const ctaBlock =
-    ctaText && ctaUrl
-      ? `
-      <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-top:14px;">
-        <tr>
-          <td align="center">
-            <a href="${ctaUrl}"
-              style="display:inline-block;background-color:${accentDeep};color:#ffffff;padding:14px 36px;text-decoration:none;border-radius:8px;font-weight:700;font-size:14px;letter-spacing:0.5px;">
-              ${escapeHtml(ctaText)} &rarr;
-            </a>
-          </td>
-        </tr>
-      </table>`
-      : "";
-
-  const today = new Date()
-    .toLocaleDateString("en-US", {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
+/** Parse admin "steps" textarea: blank line between steps, first line = title, rest = description. */
+export function parseStepsFromText(raw: string): NewsEmailStep[] {
+  return raw
+    .trim()
+    .split(/\n{2,}/)
+    .map((block) => {
+      const lines = block.split("\n").map((line) => line.trim()).filter(Boolean);
+      if (lines.length === 0) return null;
+      const [first, ...rest] = lines;
+      return { title: first, description: rest.join(" ") };
     })
-    .toUpperCase();
-
-  const unsubHref = unsubscribeToken
-    ? unsubscribeUrl(unsubscribeToken)
-    : `${SITE_URL}/api/unsubscribe`;
-
-  return `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>${escapeHtml(title)}</title>
-      <style>
-        @media only screen and (max-width: 600px) {
-          .container { width: 100% !important; }
-          .h1 { font-size: 24px !important; }
-        }
-      </style>
-    </head>
-    <body style="margin:0;padding:0;background-color:#0a0a0a;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-      <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#0a0a0a;">
-        <tr>
-          <td align="center" style="padding:40px 16px;">
-            <table class="container" width="600" cellpadding="0" cellspacing="0" role="presentation"
-              style="max-width:600px;width:100%;border-radius:16px;overflow:hidden;border:1px solid #1f1f1f;background-color:#141414;">
-
-              <!-- Film strip top -->
-              <tr><td style="padding:0;line-height:0;font-size:0;">${filmStrip("#111118", "#0a0a0a")}</td></tr>
-
-              <!-- Header -->
-              <tr>
-                <td style="background-color:#111118;padding:34px 40px 30px;">
-                  <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
-                    <tr>
-                      <td valign="bottom">
-                        <p style="margin:0 0 6px;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:${accent};">
-                          News &amp; Updates
-                        </p>
-                        <h1 class="h1" style="margin:0;font-size:28px;font-weight:800;color:#ffffff;line-height:1.2;letter-spacing:-0.5px;">
-                          ${escapeHtml(title)}
-                        </h1>
-                      </td>
-                      <td valign="bottom" align="right" style="white-space:nowrap;">
-                        <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.4);letter-spacing:1px;">${today}</p>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-
-              <!-- Film strip bottom of header -->
-              <tr><td style="padding:0;line-height:0;font-size:0;">${filmStrip("#0a0a0a", "#111118")}</td></tr>
-
-              <!-- Body -->
-              <tr>
-                <td style="background-color:#141414;padding:32px 40px;">
-                  ${imageBlocks}
-                  ${bodyToParagraphs(body)}
-                  ${ctaBlock}
-                </td>
-              </tr>
-
-              <!-- Footer -->
-              <tr>
-                <td style="background-color:#0f0f0f;padding:0;">
-                  <div style="height:1px;border-top:1px dashed #2a2a2a;font-size:0;line-height:0;">&nbsp;</div>
-                  <div style="padding:20px 40px 24px;text-align:center;">
-                    <p style="margin:0 0 8px;font-size:11px;color:#3a3a3a;">
-                      &copy; 2026 recon. You're receiving this because you subscribed at <strong style="color:#555;">recon.com.ng</strong>
-                    </p>
-                    <p style="margin:0;font-size:11px;">
-                      <a href="${unsubHref}" style="color:#6b6b6b;text-decoration:underline;">Unsubscribe</a>
-                    </p>
-                  </div>
-                </td>
-              </tr>
-
-            </table>
-          </td>
-        </tr>
-      </table>
-    </body>
-    </html>
-  `;
+    .filter((step): step is NewsEmailStep => step !== null);
 }

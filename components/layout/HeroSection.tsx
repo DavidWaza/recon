@@ -194,7 +194,9 @@ export function HeroSection({
             </motion.p>
             <div className="flex items-center gap-2 text-xs font-medium tracking-wide text-muted my-5 uppercase">
               <span className="inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
-              <p>Across every streaming service you already pay for</p>
+              <p>Across every streaming service
+                
+              </p>
             </div>
 
             <AnimatePresence mode="wait">
