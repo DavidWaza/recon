@@ -8,29 +8,7 @@ import {
   weeklyPicksEmailHtml,
   type WeeklyPick,
 } from "@/lib/emails/weekly-picks";
-
-const GENRE_OPTIONS = [
-  "Action",
-  "Adventure",
-  "Comedy",
-  "Drama",
-  "Horror",
-  "Sci-Fi",
-  "Thriller",
-  "Mystery",
-  "Physchological Thriller",
-  "Mind Bending",
-  "Dark Comedy",
-  "Crime",
-  "Fantasy",
-  "Romance",
-  "Documentary",
-  "War",
-  "Tragedy",
-  "Animation",
-  "War Crime",
-  "Epic Adventure",
-];
+import { GenrePicker } from "@/components/admin/GenrePicker";
 
 const IMDB_OPTIONS = [
   "10.0",
@@ -299,52 +277,15 @@ export default function AdminPage() {
                       />
                     </div>
 
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div className="space-y-2">
-                        <label className={labelClass}>Genres</label>
-                        <select
-                          multiple
-                          value={pick.genre
-                            .split(",")
-                            .map((value) => value.trim())
-                            .filter(Boolean)}
-                          onChange={(e) => {
-                            const selectedGenres = Array.from(
-                              e.target.selectedOptions,
-                            ).map((option) => option.value);
-                            updatePick(i, "genre", selectedGenres.join(", "));
-                          }}
-                          className="h-32 w-full min-h-32 bg-[#0f0f0f] border border-[#2a2a2a] rounded-2xl px-3 py-3 text-white text-sm focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20"
-                        >
-                          {GENRE_OPTIONS.map((genre) => (
-                            <option
-                              key={genre}
-                              value={genre}
-                              className="bg-[#0f0f0f] text-white"
-                            >
-                              {genre}
-                            </option>
-                          ))}
-                        </select>
-                        <p className="text-[11px] text-[#7a7a7a]">
-                          Use Ctrl/Cmd+click to select multiple genres.
-                        </p>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {pick.genre
-                            .split(",")
-                            .map((value) => value.trim())
-                            .filter(Boolean)
-                            .map((genre) => (
-                              <span
-                                key={genre}
-                                className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-[11px] text-white ring-1 ring-white/10"
-                              >
-                                {genre}
-                              </span>
-                            ))}
-                        </div>
-                      </div>
+                    <div className="space-y-2">
+                      <label className={labelClass}>Genres</label>
+                      <GenrePicker
+                        value={pick.genre}
+                        onChange={(genre) => updatePick(i, "genre", genre)}
+                      />
+                    </div>
 
+                    <div className="grid gap-4 sm:grid-cols-2">
                       <div className="space-y-2">
                         <label className={labelClass}>Trailer URL</label>
                         <input
@@ -357,9 +298,7 @@ export default function AdminPage() {
                           className={inputClass}
                         />
                       </div>
-                    </div>
 
-                    <div className="grid gap-4 sm:grid-cols-2">
                       <div className="space-y-2">
                         <label className={labelClass}>Poster URL</label>
                         <input
@@ -372,21 +311,21 @@ export default function AdminPage() {
                           className={inputClass}
                         />
                       </div>
+                    </div>
 
-                      <div className="space-y-2">
-                        <label className={labelClass}>
-                          Watch link (Netflix, Prime, Max…)
-                        </label>
-                        <input
-                          type="text"
-                          value={pick.netflix_url}
-                          onChange={(e) =>
-                            updatePick(i, "netflix_url", e.target.value)
-                          }
-                          placeholder="Where to watch link"
-                          className={inputClass}
-                        />
-                      </div>
+                    <div className="space-y-2">
+                      <label className={labelClass}>
+                        Watch link (Netflix, Prime, Max…)
+                      </label>
+                      <input
+                        type="text"
+                        value={pick.netflix_url}
+                        onChange={(e) =>
+                          updatePick(i, "netflix_url", e.target.value)
+                        }
+                        placeholder="Where to watch link"
+                        className={inputClass}
+                      />
                     </div>
                   </div>
                 </div>

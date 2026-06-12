@@ -1,4 +1,5 @@
 import type { Movie } from "@/lib/types";
+import { ALL_GENRES } from "./genres";
 
 export const movies: Movie[] = [
   {
@@ -186,5 +187,5 @@ export const heroPreviewMovies = movies.slice(0, 5);
 export const heroCarouselMovies = movies.slice(0, 6);
 
 export const allGenres = Array.from(
-  new Set(movies.flatMap((m) => m.genre))
+  new Set([...ALL_GENRES, ...movies.flatMap((m) => m.genre)]),
 ).sort();
