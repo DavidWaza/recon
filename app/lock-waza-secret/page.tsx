@@ -159,7 +159,8 @@ export default function AdminPage() {
       setResult(data);
       if (data.success) {
         toast.success(data.message ?? `Sent to ${data.sent} subscriber(s)`);
-        if (mode === "all") setPicks([{ ...EMPTY_PICK }]);
+        // Keep the picks after a broadcast so the list can be re-sent if not
+        // every subscriber was reached in one pass.
       } else {
         toast.error(data.error ?? "Failed to send");
       }

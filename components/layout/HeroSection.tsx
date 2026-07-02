@@ -500,6 +500,40 @@ export function HeroPreviewSection({ movies }: { movies: Movie[] }) {
                       </span>
                     ))}
                   </div>
+
+                  {(movie.trailerUrl || movie.watchUrl) && (
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {movie.trailerUrl && (
+                        <a
+                          href={movie.trailerUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 min-w-[8.5rem]"
+                        >
+                          <CTAButton
+                            variant="secondary"
+                            size="sm"
+                            fullWidth
+                            type="button"
+                          >
+                            Watch Trailer
+                          </CTAButton>
+                        </a>
+                      )}
+                      {movie.watchUrl && (
+                        <a
+                          href={movie.watchUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 min-w-[8.5rem]"
+                        >
+                          <CTAButton size="sm" fullWidth type="button">
+                            Click to watch
+                          </CTAButton>
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>
