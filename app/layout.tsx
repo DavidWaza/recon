@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { AdSenseScript } from "@/components/ads/AdSenseScript";
 import { ToastProvider } from "@/components/providers/ToastProvider";
 
 const inter = Inter({
@@ -40,6 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full bg-background text-foreground">
+        <AdSenseScript />
         <ToastProvider />
         {children}
       </body>

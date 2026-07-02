@@ -9,6 +9,8 @@ import { WhyRecon } from "@/components/landing/WhyRecon";
 import { FAQ } from "@/components/landing/FAQ";
 import { Footer } from "@/components/landing/Footer";
 import { PreferenceQuiz } from "@/components/landing/PreferenceQuiz";
+import { AdBanner } from "@/components/ads/AdBanner";
+import { ADSENSE_SLOTS } from "@/lib/adsense";
 import type { Movie } from "@/lib/types";
 
 type LandingPageProps = {
@@ -41,8 +43,16 @@ export function LandingPage({
         submitted={submitted}
       />
       <HeroPreviewSection movies={heroPreviewMovies} />
+
+      {/* Best mid-page placement: users just browsed picks; high intent before scrolling on. */}
+      <AdBanner slot={ADSENSE_SLOTS.homeMid} className="py-10" />
+
       <HowItWorks />
       <WhyRecon />
+
+      {/* Lower-funnel placement: readers who reached FAQ are engaged. */}
+      <AdBanner slot={ADSENSE_SLOTS.homeFooter} className="pb-6 pt-2" />
+
       <FAQ />
       <Footer />
 
