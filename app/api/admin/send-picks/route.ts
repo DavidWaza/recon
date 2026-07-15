@@ -112,7 +112,9 @@ export async function POST(req: Request) {
       return sendEmail(
         sub.email,
         "Your movie picks for this Friday",
-        weeklyPicksEmailHtml(sub.email, picks, token),
+        // savedPicks (not the request body) carry the real weekly_picks UUIDs,
+        // which is what makes trailer/watch clicks attributable.
+        weeklyPicksEmailHtml(sub.email, savedPicks, token, sub.id),
         token,
       );
     });
@@ -133,7 +135,7 @@ export async function POST(req: Request) {
     .update({ sent_at: new Date().toISOString() })
     .in(
       "id",
-      savedPicks.map((p: { id: number }) => p.id),
+      savedPicks.map((p: { id: string | number }) => p.id),
     );
 
   return NextResponse.json({

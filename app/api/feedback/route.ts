@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
 
   const { error } = await supabaseAdmin
     .from("recommendations")
-    .update({ feedback: action })
+    .update({ feedback: action, feedback_at: new Date().toISOString() })
     .eq("id", id);
 
   if (error) {

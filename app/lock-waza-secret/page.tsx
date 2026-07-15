@@ -204,7 +204,15 @@ export default function AdminPage() {
       />
 
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">Admin — Weekly Picks</h1>
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="text-3xl font-bold mb-2">Admin — Weekly Picks</h1>
+          <a
+            href="/lock-waza-secret/metrics"
+            className="shrink-0 rounded-2xl border border-[#2a2a2a] px-4 py-2 text-sm text-[#a3a3a3] hover:text-white transition-colors"
+          >
+            Metrics →
+          </a>
+        </div>
         <p className="text-[#a3a3a3] mb-8">
           Build this week&apos;s picks, send a test to yourself, then send to
           all subscribers.

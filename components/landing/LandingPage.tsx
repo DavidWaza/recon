@@ -7,6 +7,7 @@ import { HeroSection, HeroPreviewSection } from "@/components/layout/HeroSection
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { WhyRecon } from "@/components/landing/WhyRecon";
 import { FAQ } from "@/components/landing/FAQ";
+import { FeedbackForm } from "@/components/landing/FeedbackForm";
 import { Footer } from "@/components/landing/Footer";
 import { PreferenceQuiz } from "@/components/landing/PreferenceQuiz";
 import { AdBanner } from "@/components/ads/AdBanner";
@@ -54,6 +55,8 @@ export function LandingPage({
       <AdBanner slot={ADSENSE_SLOTS.homeFooter} className="pb-6 pt-2" />
 
       <FAQ />
+      {/* After FAQ: readers who got this far have the context to say something useful. */}
+      <FeedbackForm />
       <Footer />
 
       <AnimatePresence>

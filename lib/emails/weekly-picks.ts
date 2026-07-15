@@ -1,4 +1,4 @@
-import { SITE_URL, feedbackUrl, unsubscribeUrl } from "@/lib/urls";
+import { SITE_URL, feedbackUrl, trackedUrl, unsubscribeUrl } from "@/lib/urls";
 
 export type WeeklyPick = {
   id: string | number;
@@ -29,6 +29,12 @@ export function weeklyPicksEmailHtml(
   email: string,
   picks: WeeklyPick[],
   unsubscribeToken?: string,
+  /**
+   * Recipient's `subscribers.id`. Only present on a real broadcast — it lets a
+   * trailer/watch click be attributed to a person. Previews and test sends omit
+   * it and get plain, untracked links.
+   */
+  subscriberId?: string,
 ) {
   const accent = "#6366f1";
   const accentDeep = "#4f46e5";
@@ -47,12 +53,31 @@ export function weeklyPicksEmailHtml(
 
   const pickCards = picks
     .map((pick) => {
-      const watchHref = pick.watch_url ?? pick.netflix_url;
-      const trailerHref =
+      const watchDest = pick.watch_url ?? pick.netflix_url;
+      const trailerDest =
         pick.trailer_url ??
         (pick.trailer_youtube_id
           ? `https://www.youtube.com/watch?v=${pick.trailer_youtube_id}`
           : undefined);
+
+      // Route through /api/track so the click is measurable — an inbox cannot
+      // run JavaScript, so this redirect is the only way to see it.
+      const watchHref = watchDest
+        ? trackedUrl({
+            kind: "watch",
+            destination: watchDest,
+            weeklyPickId: pick.id,
+            subscriberId,
+          })
+        : undefined;
+      const trailerHref = trailerDest
+        ? trackedUrl({
+            kind: "trailer",
+            destination: trailerDest,
+            weeklyPickId: pick.id,
+            subscriberId,
+          })
+        : undefined;
 
       const poster = pick.poster_url
         ? `<img src="${pick.poster_url}" alt="" width="110" class="pick-poster-img" style="display:block;width:110px;height:170px;object-fit:cover;border-radius:9px 0 0 9px;" />`
