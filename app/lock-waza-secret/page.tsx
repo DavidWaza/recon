@@ -9,6 +9,37 @@ import {
   type WeeklyPick,
 } from "@/lib/emails/weekly-picks";
 import { GenrePicker } from "@/components/admin/GenrePicker";
+import { EmailPreview, EditPreviewSwitch } from "@/components/admin/EmailPreview";
+import {
+  PageActions,
+  PageDescription,
+  PageEyebrow,
+  PageHeader,
+  PageHeading,
+  PageTitle,
+} from "@/components/admin/PageHeader";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
+import { Callout } from "@/components/ui/Callout";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
+import {
+  Field,
+  FieldHeader,
+  FieldHint,
+  FieldLabel,
+  Input,
+  Select,
+  Textarea,
+} from "@/components/ui/Field";
+import { Icon } from "@/components/ui/Icon";
+import { cn } from "@/lib/utils";
 
 const IMDB_OPTIONS = [
   "10.0",
@@ -86,7 +117,8 @@ export default function AdminPage() {
     error?: string;
   } | null>(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [showPreview, setShowPreview] = useState(true);
+  const [collapsed, setCollapsed] = useState<Set<number>>(new Set());
+  const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
 
   const updatePick = (index: number, field: keyof Pick, value: string) => {
     setPicks((prev) =>
@@ -96,8 +128,27 @@ export default function AdminPage() {
 
   const addPick = () => setPicks((prev) => [...prev, { ...EMPTY_PICK }]);
 
-  const removePick = (index: number) =>
+  const removePick = (index: number) => {
     setPicks((prev) => prev.filter((_, i) => i !== index));
+    // Collapsed state is keyed by position, so shift everything after the
+    // removed card down by one.
+    setCollapsed((prev) => {
+      const next = new Set<number>();
+      prev.forEach((i) => {
+        if (i < index) next.add(i);
+        else if (i > index) next.add(i - 1);
+      });
+      return next;
+    });
+  };
+
+  const toggleCollapsed = (index: number) =>
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -119,6 +170,9 @@ export default function AdminPage() {
   }, [picks]);
 
   const validPickCount = picks.filter((pick) => pick.title.trim()).length;
+  const withWatchLink = picks.filter((p) => p.netflix_url.trim()).length;
+  const withPoster = picks.filter((p) => p.poster_url.trim()).length;
+  const withTrailer = picks.filter((p) => p.trailer_url.trim()).length;
 
   const previewHtml = weeklyPicksEmailHtml(
     testEmail || "you@email.com",
@@ -183,13 +237,8 @@ export default function AdminPage() {
     setShowConfirmModal(true);
   };
 
-  const inputClass =
-    "w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-2xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20";
-  const labelClass =
-    "block text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider";
-
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white p-8">
+    <>
       <ConfirmDialog
         open={showConfirmModal}
         title="Send weekly picks to all subscribers?"
@@ -203,224 +252,332 @@ export default function AdminPage() {
         loading={busy === "all"}
       />
 
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-start justify-between gap-4">
-          <h1 className="text-3xl font-bold mb-2">Admin — Weekly Picks</h1>
-          <a
-            href="/lock-waza-secret/metrics"
-            className="shrink-0 rounded-2xl border border-[#2a2a2a] px-4 py-2 text-sm text-[#a3a3a3] hover:text-white transition-colors"
-          >
-            Metrics →
-          </a>
-        </div>
-        <p className="text-[#a3a3a3] mb-8">
-          Build this week&apos;s picks, send a test to yourself, then send to
-          all subscribers.
-        </p>
+      <PageHeader>
+        <PageHeading>
+          <PageEyebrow>
+            <Icon name="calendar" className="size-3.5" />
+            Friday send
+          </PageEyebrow>
+          <PageTitle>Weekly picks</PageTitle>
+          <PageDescription>
+            Build this week&apos;s list, send a test to yourself, then broadcast
+            to every subscriber. Drafts save to this browser automatically.
+          </PageDescription>
+        </PageHeading>
+        <PageActions>
+          <Badge tone={validPickCount > 0 ? "info" : "neutral"} dot size="lg">
+            {validPickCount > 0
+              ? `${validPickCount} ready to send`
+              : "Draft"}
+          </Badge>
+        </PageActions>
+      </PageHeader>
 
-        <div className="grid gap-8 lg:grid-cols-[1fr_minmax(360px,520px)]">
-          {/* Editor + actions */}
-          <div>
-            <div className="space-y-6">
-              {picks.map((pick, i) => (
-                <div
-                  key={i}
-                  className="bg-[#141414] border border-[#1f1f1f] rounded-xl p-6"
-                >
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="font-semibold text-white">Pick #{i + 1}</h2>
+      {/* Draft health — tells you at a glance what's still missing. */}
+      <section
+        aria-label="Draft checklist"
+        className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4"
+      >
+        <Checkpoint icon="film" label="Titled" value={validPickCount} total={picks.length} />
+        <Checkpoint icon="photo" label="Posters" value={withPoster} total={picks.length} />
+        <Checkpoint icon="play" label="Trailers" value={withTrailer} total={picks.length} />
+        <Checkpoint icon="link" label="Watch links" value={withWatchLink} total={picks.length} />
+      </section>
+
+      <EditPreviewSwitch value={mobileView} onChange={setMobileView} />
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,460px)] xl:gap-8">
+        {/* ---------------- Editor ---------------- */}
+        <div className={cn("min-w-0 space-y-4", mobileView === "preview" && "hidden lg:block")}>
+          {picks.map((pick, i) => {
+            const isCollapsed = collapsed.has(i);
+            return (
+              <Card key={i} className="gap-0 py-0 sm:gap-0 sm:py-0">
+                <CardHeader className="py-3.5 sm:py-4">
+                  <button
+                    type="button"
+                    onClick={() => toggleCollapsed(i)}
+                    aria-expanded={!isCollapsed}
+                    className="flex min-w-0 items-center gap-3 text-left"
+                  >
+                    <PosterThumb key={pick.poster_url} url={pick.poster_url} index={i} />
+                    <span className="min-w-0">
+                      <CardTitle className="truncate">
+                        {pick.title.trim() || `Pick #${i + 1}`}
+                      </CardTitle>
+                      <CardDescription className="truncate">
+                        ★ {pick.imdb_rating} · {pick.genre || "No genre"}
+                      </CardDescription>
+                    </span>
+                  </button>
+                  <CardAction>
                     {picks.length > 1 && (
-                      <button
+                      <Button
+                        color="destructive"
+                        variant="ghost"
+                        size="icon-sm"
                         onClick={() => removePick(i)}
-                        className="text-sm text-red-500 hover:text-red-400"
+                        aria-label={`Remove pick ${i + 1}`}
                       >
-                        Remove
-                      </button>
+                        <Icon name="trash" />
+                      </Button>
                     )}
-                  </div>
-                  <div className="grid gap-4">
-                    <div className="grid gap-4 lg:grid-cols-[1.4fr_0.6fr]">
-                      <div className="space-y-2">
-                        <label className={labelClass}>Title</label>
-                        <input
-                          type="text"
+                    <Button
+                      color="secondary"
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() => toggleCollapsed(i)}
+                      aria-label={isCollapsed ? "Expand pick" : "Collapse pick"}
+                    >
+                      <Icon
+                        name="chevron-down"
+                        className={cn("transition-transform", !isCollapsed && "rotate-180")}
+                      />
+                    </Button>
+                  </CardAction>
+                </CardHeader>
+
+                {!isCollapsed && (
+                  <CardContent className="grid gap-5 border-t border-border py-5">
+                    <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_9rem]">
+                      <Field>
+                        <FieldLabel htmlFor={`title-${i}`}>Title</FieldLabel>
+                        <Input
+                          id={`title-${i}`}
                           value={pick.title}
                           onChange={(e) => updatePick(i, "title", e.target.value)}
                           placeholder="Movie title"
-                          className={inputClass}
                         />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className={labelClass}>IMDb Rating</label>
-                        <select
+                      </Field>
+                      <Field>
+                        <FieldLabel htmlFor={`rating-${i}`}>IMDb</FieldLabel>
+                        <Select
+                          id={`rating-${i}`}
                           value={pick.imdb_rating}
-                          onChange={(e) =>
-                            updatePick(i, "imdb_rating", e.target.value)
-                          }
-                          className={inputClass}
+                          onChange={(e) => updatePick(i, "imdb_rating", e.target.value)}
                         >
                           {IMDB_OPTIONS.map((value) => (
-                            <option
-                              key={value}
-                              value={value}
-                              className="bg-[#0f0f0f] text-white"
-                            >
+                            <option key={value} value={value}>
                               {value}
                             </option>
                           ))}
-                        </select>
-                      </div>
+                        </Select>
+                      </Field>
                     </div>
 
-                    <div className="space-y-2">
-                      <label className={labelClass}>Description</label>
-                      <textarea
+                    <Field>
+                      <FieldHeader>
+                        <FieldLabel htmlFor={`desc-${i}`}>Description</FieldLabel>
+                        <FieldHint>{pick.description.length} chars</FieldHint>
+                      </FieldHeader>
+                      <Textarea
+                        id={`desc-${i}`}
                         rows={4}
                         value={pick.description}
-                        onChange={(e) =>
-                          updatePick(i, "description", e.target.value)
-                        }
+                        onChange={(e) => updatePick(i, "description", e.target.value)}
                         placeholder="A concise overview of the pick, styled for the newsletter."
-                        className={`${inputClass} resize-none`}
                       />
-                    </div>
+                    </Field>
 
-                    <div className="space-y-2">
-                      <label className={labelClass}>Genres</label>
+                    <Field>
+                      <FieldLabel>Genres</FieldLabel>
                       <GenrePicker
                         value={pick.genre}
                         onChange={(genre) => updatePick(i, "genre", genre)}
                       />
-                    </div>
+                    </Field>
 
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div className="space-y-2">
-                        <label className={labelClass}>Trailer URL</label>
-                        <input
-                          type="text"
+                    <div className="grid gap-5 sm:grid-cols-2">
+                      <Field>
+                        <FieldLabel htmlFor={`trailer-${i}`}>Trailer URL</FieldLabel>
+                        <Input
+                          id={`trailer-${i}`}
+                          type="url"
+                          inputMode="url"
                           value={pick.trailer_url}
-                          onChange={(e) =>
-                            updatePick(i, "trailer_url", e.target.value)
-                          }
+                          onChange={(e) => updatePick(i, "trailer_url", e.target.value)}
                           placeholder="YouTube trailer link"
-                          className={inputClass}
                         />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className={labelClass}>Poster URL</label>
-                        <input
-                          type="text"
+                      </Field>
+                      <Field>
+                        <FieldLabel htmlFor={`poster-${i}`}>Poster URL</FieldLabel>
+                        <Input
+                          id={`poster-${i}`}
+                          type="url"
+                          inputMode="url"
                           value={pick.poster_url}
-                          onChange={(e) =>
-                            updatePick(i, "poster_url", e.target.value)
-                          }
+                          onChange={(e) => updatePick(i, "poster_url", e.target.value)}
                           placeholder="Cover image link"
-                          className={inputClass}
                         />
-                      </div>
+                      </Field>
                     </div>
 
-                    <div className="space-y-2">
-                      <label className={labelClass}>
-                        Watch link (Netflix, Prime, Max…)
-                      </label>
-                      <input
-                        type="text"
+                    <Field>
+                      <FieldHeader>
+                        <FieldLabel htmlFor={`watch-${i}`}>Watch link</FieldLabel>
+                        <FieldHint>Netflix, Prime, Max…</FieldHint>
+                      </FieldHeader>
+                      <Input
+                        id={`watch-${i}`}
+                        type="url"
+                        inputMode="url"
                         value={pick.netflix_url}
-                        onChange={(e) =>
-                          updatePick(i, "netflix_url", e.target.value)
-                        }
+                        onChange={(e) => updatePick(i, "netflix_url", e.target.value)}
                         placeholder="Where to watch link"
-                        className={inputClass}
                       />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                    </Field>
+                  </CardContent>
+                )}
+              </Card>
+            );
+          })}
 
-            <button
-              onClick={addPick}
-              className="mt-4 w-full border border-dashed border-[#2a2a2a] rounded-xl py-3 text-sm text-[#a3a3a3] hover:border-[#E50914]/40 hover:text-white transition-colors"
-            >
-              + Add another pick
-            </button>
+          <button
+            type="button"
+            onClick={addPick}
+            className="group flex h-14 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-border-strong text-sm font-semibold text-muted transition-colors hover:border-accent-500/60 hover:bg-accent-50/50 hover:text-foreground"
+          >
+            <span className="flex size-7 items-center justify-center rounded-full border border-border bg-surface transition-colors group-hover:border-accent-500 group-hover:bg-accent-500 group-hover:text-base-950">
+              <Icon name="plus" className="size-4" weight={2.25} />
+            </span>
+            Add another pick
+          </button>
 
-            {/* Test + broadcast */}
-            <div className="mt-6 rounded-xl border border-[#1f1f1f] bg-[#141414] p-5">
-              <p className="text-sm font-semibold text-white">
-                Test before you broadcast
-              </p>
-              <p className="mt-1 text-xs text-[#a3a3a3]">
-                Sends these exact picks to one address only. Nothing is saved or
-                sent to subscribers.
-              </p>
-              <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-                <input
+          {/* ---------------- Send ---------------- */}
+          <Card className="border-accent-150/70">
+            <CardHeader>
+              <CardTitle>
+                <Icon name="send" className="size-4 text-accent-500" />
+                Test, then broadcast
+              </CardTitle>
+              <CardDescription>
+                A test sends these exact picks to one address. Nothing is saved
+                or sent to subscribers until you broadcast.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-3">
+              <div className="flex flex-col gap-2.5 sm:flex-row">
+                <Input
                   type="email"
+                  inputMode="email"
+                  autoComplete="email"
                   value={testEmail}
                   onChange={(e) => setTestEmail(e.target.value)}
                   placeholder="you@email.com"
-                  className={inputClass}
+                  aria-label="Test email address"
                 />
-                <button
+                <Button
+                  color="secondary"
                   onClick={() => send("test")}
                   disabled={busy !== null}
-                  className="shrink-0 rounded-xl border border-[#2a2a2a] bg-[#1f1f1f] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#2a2a2a] disabled:opacity-50"
+                  loading={busy === "test"}
+                  className="sm:w-auto"
+                  block
                 >
-                  {busy === "test" ? "Sending…" : "Send test to myself"}
-                </button>
+                  {busy === "test" ? "Sending…" : "Send test"}
+                </Button>
               </div>
 
-              <button
+              <Button
+                size="lg"
+                block
                 onClick={requestSend}
                 disabled={busy !== null}
-                className="mt-4 w-full bg-[#E50914] hover:bg-[#c40812] disabled:opacity-50 text-white font-bold py-4 rounded-xl transition-colors"
+                loading={busy === "all"}
               >
-                {busy === "all"
-                  ? "Sending..."
-                  : "Save Picks & Send to All Subscribers"}
-              </button>
+                {busy === "all" ? (
+                  "Sending…"
+                ) : (
+                  <>
+                    <Icon name="send" />
+                    Save picks &amp; send to all subscribers
+                  </>
+                )}
+              </Button>
 
               {result && (
-                <div
-                  className={`mt-4 p-4 rounded-xl text-sm ${result.error ? "bg-red-950 text-red-400 border border-red-900" : "bg-green-950 text-green-400 border border-green-900"}`}
-                >
+                <Callout tone={result.error ? "danger" : result.failed ? "attention" : "success"}>
                   {result.error
-                    ? `❌ Error: ${result.error}`
-                    : `✅ ${result.message ?? `Sent to ${result.sent} subscriber${result.sent !== 1 ? "s" : ""}${result.failed ? ` (${result.failed} failed)` : ""}`}`}
-                </div>
+                    ? result.error
+                    : (result.message ??
+                      `Sent to ${result.sent} subscriber${result.sent !== 1 ? "s" : ""}${result.failed ? ` (${result.failed} failed)` : ""}`)}
+                </Callout>
               )}
-            </div>
-          </div>
-
-          {/* Live preview */}
-          <div className="lg:sticky lg:top-8 lg:self-start">
-            <div className="mb-3 flex items-center justify-between">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#a3a3a3]">
-                Live preview
-              </p>
-              <button
-                onClick={() => setShowPreview((s) => !s)}
-                className="text-xs text-[#a3a3a3] transition-colors hover:text-white"
-              >
-                {showPreview ? "Hide" : "Show"}
-              </button>
-            </div>
-            {showPreview && (
-              <div className="overflow-hidden rounded-xl border border-[#1f1f1f]">
-                <iframe
-                  srcDoc={previewHtml}
-                  title="Email preview"
-                  className="h-[720px] w-full border-0 bg-[#0a0a0a]"
-                />
-              </div>
-            )}
-          </div>
+            </CardContent>
+          </Card>
         </div>
+
+        {/* ---------------- Preview ---------------- */}
+        <EmailPreview
+          html={previewHtml}
+          className={cn(mobileView === "edit" && "hidden lg:flex")}
+        />
+      </div>
+    </>
+  );
+}
+
+function Checkpoint({
+  icon,
+  label,
+  value,
+  total,
+}: {
+  icon: "film" | "photo" | "play" | "link";
+  label: string;
+  value: number;
+  total: number;
+}) {
+  const done = total > 0 && value === total;
+  const pct = total === 0 ? 0 : (value / total) * 100;
+  return (
+    <div className="rounded-2xl border border-border bg-surface p-3.5 shadow-card sm:p-4">
+      <div className="flex items-center justify-between">
+        <span
+          className={cn(
+            "flex size-8 items-center justify-center rounded-lg border",
+            done
+              ? "border-green-150 bg-green-50 text-green-500"
+              : "border-border bg-base-100 text-muted",
+          )}
+        >
+          <Icon name={done ? "check" : icon} className="size-4" weight={done ? 2.25 : 1.75} />
+        </span>
+        <span className="text-lg font-semibold tabular-nums text-foreground">
+          {value}
+          <span className="text-sm font-medium text-subtle">/{total}</span>
+        </span>
+      </div>
+      <p className="mt-2.5 text-xs font-medium text-muted">{label}</p>
+      <div className="mt-2 h-1 overflow-hidden rounded-full bg-base-150">
+        <div
+          className={cn("h-full rounded-full transition-[width] duration-500", done ? "bg-green-500" : "bg-accent-500")}
+          style={{ width: `${pct}%` }}
+        />
       </div>
     </div>
+  );
+}
+
+function PosterThumb({ url, index }: { url: string; index: number }) {
+  // Reset on a new URL comes from the caller keying this by url.
+  const [failed, setFailed] = useState(false);
+
+  if (!url.trim() || failed) {
+    return (
+      <span className="flex h-12 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-base-100 text-xs font-bold tabular-nums text-subtle">
+        {index + 1}
+      </span>
+    );
+  }
+  return (
+    // Admin can paste any host, so this can't go through next/image's allowlist.
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={url}
+      alt=""
+      onError={() => setFailed(true)}
+      className="h-12 w-9 shrink-0 rounded-md object-cover ring-1 ring-border"
+    />
   );
 }

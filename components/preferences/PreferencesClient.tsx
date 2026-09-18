@@ -125,13 +125,13 @@ export function PreferencesClient({
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-12">
+    <main className="flex min-h-dvh items-center justify-center bg-background px-4 py-12">
       <div className="w-full max-w-xl">
         <div className="mb-6 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-accent-500">
             Recon
           </p>
-          <h1 className="mt-2 text-3xl font-bold text-white">
+          <h1 className="mt-2 text-[1.75rem] font-bold tracking-tight text-foreground sm:text-3xl">
             Your movie preferences
           </h1>
           <p className="mt-2 text-sm text-muted">
@@ -139,7 +139,7 @@ export function PreferencesClient({
           </p>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-card p-7 shadow-2xl sm:p-8">
+        <div className="surface-glow rounded-3xl border border-border bg-surface p-5 shadow-pop sm:p-8">
           {phase === "loading" && (
             <p className="py-10 text-center text-sm text-muted">
               Loading your preferences…
@@ -148,7 +148,7 @@ export function PreferencesClient({
 
           {phase === "identify" && (
             <div>
-              <label className="block text-sm font-semibold text-white">
+              <label className="block text-sm font-semibold text-foreground">
                 What email did you subscribe with?
               </label>
               <p className="mt-1 text-xs text-muted">
@@ -163,7 +163,7 @@ export function PreferencesClient({
                     if (e.key === "Enter") void identifyByEmail();
                   }}
                   placeholder="you@email.com"
-                  className="flex-1 rounded-xl border border-border bg-black/40 px-4 py-3 text-sm text-white placeholder:text-muted focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  className="flex-1 rounded-xl border border-border bg-surface-sunken px-4 py-3 text-sm text-foreground placeholder:text-subtle focus:border-accent-500 focus:outline-none focus:ring-4 focus:ring-accent-500/15"
                 />
                 <CTAButton size="md" loading={identifying} onClick={identifyByEmail}>
                   Continue
@@ -213,7 +213,7 @@ export function PreferencesClient({
                   onChange={(e) => setLoved(e.target.value)}
                   rows={3}
                   placeholder="e.g. Dune: Part Two, Parasite, Spider-Verse"
-                  className="w-full resize-none rounded-xl border border-border bg-black/40 px-4 py-3 text-sm text-white placeholder:text-muted focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  className="w-full resize-none rounded-xl border border-border bg-surface-sunken px-4 py-3 text-sm text-foreground placeholder:text-subtle focus:border-accent-500 focus:outline-none focus:ring-4 focus:ring-accent-500/15"
                 />
               </Section>
 
@@ -228,7 +228,7 @@ export function PreferencesClient({
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-success/15 text-2xl">
                 ✓
               </div>
-              <h2 className="text-xl font-bold text-white">Preferences saved</h2>
+              <h2 className="text-xl font-bold text-foreground">Preferences saved</h2>
               <p className="mt-2 text-sm text-muted">
                 Your next Friday picks will be tuned to your taste.
               </p>
@@ -240,7 +240,7 @@ export function PreferencesClient({
                 >
                   Edit again
                 </button>
-                <Link href="/" className="text-sm text-muted hover:text-white">
+                <Link href="/" className="text-sm text-muted hover:text-foreground">
                   Back to Recon
                 </Link>
               </div>
@@ -263,7 +263,7 @@ function Section({
 }) {
   return (
     <div>
-      <h2 className="text-base font-semibold text-white">{title}</h2>
+      <h2 className="text-base font-semibold text-foreground">{title}</h2>
       <p className="mt-1 text-xs text-muted">{subtitle}</p>
       <div className="mt-3">{children}</div>
     </div>
@@ -292,12 +292,12 @@ function GenreChips({
             onClick={() => onToggle(genre)}
             aria-pressed={active}
             className={[
-              "rounded-full px-3.5 py-1.5 text-sm font-medium transition-all duration-200",
+              "inline-flex h-10 items-center rounded-full px-4 text-sm font-medium transition-all duration-200",
               active
                 ? tone === "accent"
-                  ? "bg-accent text-white ring-1 ring-accent"
-                  : "bg-white/10 text-white ring-1 ring-white/30"
-                : "bg-black/30 text-muted ring-1 ring-border hover:text-white hover:ring-white/20",
+                  ? "bg-accent-500 text-base-950 ring-1 ring-accent-500"
+                  : "bg-red-50 text-red-500 ring-1 ring-red-150"
+                : "bg-surface-sunken text-muted ring-1 ring-border hover:text-foreground hover:ring-border-strong",
             ].join(" ")}
           >
             {genre}

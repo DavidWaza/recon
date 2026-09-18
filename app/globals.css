@@ -1,49 +1,293 @@
 @import "tailwindcss";
 
+/* ===========================================================================
+   Recon design system — one file is the source of truth.
+   ---------------------------------------------------------------------------
+   Two tiers, per ARCHITECTURE.md §2:
+
+     1. RAW RAMPS in :root   — hex only, no meaning attached.
+     2. @theme inline        — maps ramps to Tailwind utilities, and defines
+                               the SEMANTIC aliases components are written
+                               against.
+
+   Ramp shape follows the blueprint (base 0/50/100/150/400/500/550/600/900/950;
+   accent/green/red/yellow 50/100/150/500/600) so every variant file reads the
+   same as the reference project. Only the hex changed: this product is dark,
+   so base-0 is the darkest canvas and base-900 is the brightest text.
+
+   Deliberate deviation: we do NOT reset --color-* to initial. Tailwind's
+   stock palette stays available for email previews and third-party embeds.
+   The rule is social instead of mechanical: product surfaces use the
+   semantic aliases below, never slate-700 or #1a1a1a.
+   =========================================================================== */
+
 :root {
-  --background: #1b1f3b;
-  --card: #11162a;
-  --border: #2a2f4a;
-  --accent: #4f46e5;
-  --accent-hover: #6366f1;
-  --success: #22c55e;
-  --foreground: #ffffff;
-  --muted: #a1a1aa;
+  /* base: canvas, surfaces, borders, text */
+  --base-0: #080b17;   /* page canvas */
+  --base-50: #0e1224;  /* card surface */
+  --base-100: #141a32; /* raised surface, hover */
+  --base-150: #1b2240; /* input surface, pressed */
+  --base-400: #262e52; /* hairline border */
+  --base-500: #343d6a; /* strong border */
+  --base-550: #6d76a0; /* disabled text, decorative icon */
+  --base-600: #9aa3c8; /* muted / secondary text */
+  --base-900: #e9ecf8; /* primary text */
+  --base-950: #ffffff; /* max contrast, on-accent text */
+
+  /* accent: primary action, links, focus */
+  --accent-50: #151a3d;
+  --accent-100: #1e2657;
+  --accent-150: #2b3583;
+  --accent-500: #5b54f0;
+  --accent-600: #4a42dd;
+
+  /* green: success */
+  --green-50: #0b2119;
+  --green-100: #0f3a27;
+  --green-150: #14603f;
+  --green-500: #22c55e;
+  --green-600: #16a34a;
+
+  /* red: destructive, errors */
+  --red-50: #2a1015;
+  --red-100: #46161f;
+  --red-150: #6d1f2c;
+  --red-500: #f05252;
+  --red-600: #dc2626;
+
+  /* yellow: warning, pending */
+  --yellow-50: #2a2008;
+  --yellow-100: #45340a;
+  --yellow-150: #6b4f0d;
+  --yellow-500: #f5b024;
+  --yellow-600: #d99410;
+
+  /* flow: brand gradient / chrome */
+  --flow-primary: #5b54f0;
+  --flow-secondary: #a855f7;
+  --flow-stroke: #2b3583;
+
+  /* radius: everything derives from one value */
+  --radius: 0.875rem;
+
+  /* elevation */
+  --elev-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --elev-pop: 0 24px 60px -24px rgb(0 0 0 / 0.85);
+  --elev-accent: 0 10px 30px -12px
+    color-mix(in oklab, var(--accent-500) 60%, transparent);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-card: var(--card);
-  --color-border: var(--border);
-  --color-accent: var(--accent);
-  --color-accent-hover: var(--accent-hover);
-  --color-success: var(--success);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
+  /* ramps */
+  --color-base-0: var(--base-0);
+  --color-base-50: var(--base-50);
+  --color-base-100: var(--base-100);
+  --color-base-150: var(--base-150);
+  --color-base-400: var(--base-400);
+  --color-base-500: var(--base-500);
+  --color-base-550: var(--base-550);
+  --color-base-600: var(--base-600);
+  --color-base-900: var(--base-900);
+  --color-base-950: var(--base-950);
+
+  --color-accent-50: var(--accent-50);
+  --color-accent-100: var(--accent-100);
+  --color-accent-150: var(--accent-150);
+  --color-accent-500: var(--accent-500);
+  --color-accent-600: var(--accent-600);
+
+  --color-green-50: var(--green-50);
+  --color-green-100: var(--green-100);
+  --color-green-150: var(--green-150);
+  --color-green-500: var(--green-500);
+  --color-green-600: var(--green-600);
+
+  --color-red-50: var(--red-50);
+  --color-red-100: var(--red-100);
+  --color-red-150: var(--red-150);
+  --color-red-500: var(--red-500);
+  --color-red-600: var(--red-600);
+
+  --color-yellow-50: var(--yellow-50);
+  --color-yellow-100: var(--yellow-100);
+  --color-yellow-150: var(--yellow-150);
+  --color-yellow-500: var(--yellow-500);
+  --color-yellow-600: var(--yellow-600);
+
+  --color-flow-primary: var(--flow-primary);
+  --color-flow-secondary: var(--flow-secondary);
+  --color-flow-stroke: var(--flow-stroke);
+
+  /* Semantic aliases — what components are written against. Legacy names
+     (card, accent-hover, foreground, muted, success) are kept so older
+     markup keeps rendering. */
+  --color-background: var(--base-0);
+  --color-surface: var(--base-50);
+  --color-surface-raised: var(--base-100);
+  --color-surface-sunken: var(--base-150);
+  --color-card: var(--base-50);
+
+  --color-border: var(--base-400);
+  --color-border-strong: var(--base-500);
+
+  --color-foreground: var(--base-900);
+  --color-muted: var(--base-600);
+  --color-subtle: var(--base-550);
+
+  --color-accent: var(--accent-500);
+  --color-accent-hover: var(--accent-600);
+  --color-success: var(--green-500);
+  --color-danger: var(--red-500);
+  --color-warning: var(--yellow-500);
+
+  /* radius scale — change --radius and the product's corners follow */
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: calc(var(--radius) - 2px);
+  --radius-xl: var(--radius);
+  --radius-2xl: calc(var(--radius) + 6px);
+  --radius-3xl: calc(var(--radius) + 14px);
+
+  /* p-4 === 1rem */
+  --spacing: 0.25rem;
+
+  /* extra-small breakpoint: the product is designed phone-first */
+  --breakpoint-xs: 26rem;
+
   --font-sans: var(--font-inter);
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+
+  --shadow-card: var(--elev-card);
+  --shadow-pop: var(--elev-pop);
+  --shadow-glow: var(--elev-accent);
 }
 
-* {
-  box-sizing: border-box;
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Stops iOS Safari inflating body copy when the phone rotates. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--base-0);
+    color: var(--base-900);
+    font-family: var(--font-sans), system-ui, sans-serif;
+    /* clip, not hidden: hidden on body silently breaks position: sticky. */
+    overflow-x: clip;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* One focus ring for the whole product. */
+  :focus-visible {
+    outline: 2px solid var(--accent-500);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--accent-500) 45%, transparent);
+    color: var(--base-950);
+  }
+
+  /* Native controls don't inherit the theme; set once here, not per call site. */
+  select option,
+  select optgroup {
+    background: var(--base-150);
+    color: var(--base-900);
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+
+  /* 16px minimum on phones — smaller makes iOS zoom the page on focus. */
+  @media (max-width: 40rem) {
+    input,
+    textarea,
+    select {
+      font-size: 16px !important;
+    }
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--base-400);
+    border: 3px solid transparent;
+    border-radius: 9999px;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--base-500);
+    background-clip: content-box;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
-html {
-  scroll-behavior: smooth;
-}
+@layer utilities {
+  /* Horizontal rails (filters, chips, thumbnails) are a mobile-first pattern
+     here; they should scroll without drawing a bar over the content. */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
-}
+  /* Bars and drawers clear the iOS home indicator / notch. */
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  .pt-safe {
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+  }
 
-::selection {
-  background: rgba(79, 70, 229, 0.4);
-  color: var(--foreground);
-}
+  /* A card that reads as lit from above — the dashboard's signature surface. */
+  .surface-glow {
+    background-image: linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--base-950) 3.5%, transparent),
+      transparent 140px
+    );
+  }
 
-select option {
-  background: var(--card);
-  color: var(--foreground);
+  /* Faint grid behind hero areas. */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, color-mix(in oklab, var(--base-950) 4%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--base-950) 4%, transparent) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+
+  .text-gradient {
+    background-image: linear-gradient(100deg, var(--base-950) 10%, var(--flow-primary) 55%, var(--flow-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
 }

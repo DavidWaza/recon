@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import type { Movie } from "@/lib/types";
 import { RatingBadge } from "./RatingBadge";
 import { GenreTag } from "./GenreTag";
-import { CTAButton } from "@/components/ui/CTAButton";
+import { ButtonLink } from "@/components/ui/Button";
+import { Icon } from "@/components/ui/Icon";
 
 type MovieCardProps = {
   movie: Movie;
@@ -29,8 +30,8 @@ export function MovieCard({
       transition={{ duration: 0.25 }}
       className={[
         "group relative flex flex-col overflow-hidden rounded-2xl",
-        "bg-card ring-1 ring-border backdrop-blur-sm",
-        "hover:ring-accent/50 hover:shadow-xl hover:shadow-accent/10",
+        "bg-surface ring-1 ring-border shadow-card",
+        "hover:ring-accent-500/50",
         compact ? "" : "h-full",
       ].join(" ")}
     >
@@ -44,7 +45,7 @@ export function MovieCard({
           src={movie.poster}
           alt={`${movie.title} poster`}
           fill
-          className="object-cover transition-transform duration-400 group-hover:scale-105"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
@@ -62,7 +63,7 @@ export function MovieCard({
             onClick={() => onToggleSave(movie.id)}
             aria-label={isSaved ? "Remove from favorites" : "Save to favorites"}
             className={[
-              "absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full backdrop-blur-md transition-all",
+              "absolute bottom-3 right-3 flex size-11 items-center justify-center rounded-full backdrop-blur-md transition-all",
               isSaved
                 ? "bg-accent text-foreground"
                 : "bg-background/80 text-foreground/80 hover:bg-background hover:text-foreground",
@@ -93,18 +94,35 @@ export function MovieCard({
           </p>
         )}
 
-        <div className="mt-auto flex gap-2 pt-1">
-          <a
-            href={movie.trailerUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1"
-          >
-            <CTAButton variant="secondary" size="sm" fullWidth type="button">
-              Watch Trailer
-            </CTAButton>
-          </a>
-        </div>
+        {(movie.trailerUrl || movie.watchUrl) && (
+          <div className="mt-auto grid grid-cols-2 gap-2 pt-1">
+            {movie.trailerUrl && (
+              <ButtonLink
+                href={movie.trailerUrl}
+                external
+                color="secondary"
+                size="sm"
+                block
+                className={movie.watchUrl ? "h-10" : "col-span-2 h-10"}
+              >
+                <Icon name="play" />
+                Trailer
+              </ButtonLink>
+            )}
+            {movie.watchUrl && (
+              <ButtonLink
+                href={movie.watchUrl}
+                external
+                size="sm"
+                block
+                className={movie.trailerUrl ? "h-10" : "col-span-2 h-10"}
+              >
+                Watch
+                <Icon name="arrow-up-right" />
+              </ButtonLink>
+            )}
+          </div>
+        )}
       </div>
     </motion.article>
   );

@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 
 export default function TermsOfServicePage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       {/* Navbar */}
-      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-background/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
           <Link href="/" className="inline-flex items-center gap-2.5">
             <Image
@@ -22,23 +22,23 @@ export default function TermsOfServicePage() {
               height={28}
               className="rounded-lg"
             />
-            <span className="text-sm font-bold text-white">Recon</span>
+            <span className="text-sm font-bold text-foreground">Recon</span>
           </Link>
           <Link
             href="/"
-            className="text-sm text-muted transition-colors hover:text-white"
+            className="text-sm text-muted transition-colors hover:text-foreground"
           >
             ← Back to home
           </Link>
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-6 py-16 sm:py-24">
+      <main className="mx-auto max-w-4xl px-4 sm:px-6 py-16 sm:py-24">
         <div className="mb-12">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-accent">
             Legal
           </p>
-          <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Terms of Service
           </h1>
           <p className="mt-3 text-sm text-muted">Last updated: June 4, 2026</p>
@@ -46,7 +46,7 @@ export default function TermsOfServicePage() {
 
         <div className="space-y-10 text-[15px] leading-relaxed text-muted/90">
           <section>
-            <h2 className="mb-4 text-lg font-semibold text-white">
+            <h2 className="mb-4 text-lg font-semibold text-foreground">
               1. Acceptance of Terms
             </h2>
             <p>
@@ -57,7 +57,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-semibold text-white">
+            <h2 className="mb-4 text-lg font-semibold text-foreground">
               2. Description of Service
             </h2>
             <p>
@@ -81,7 +81,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-semibold text-white">
+            <h2 className="mb-4 text-lg font-semibold text-foreground">
               3. User Obligations
             </h2>
             <p>By using the Service, you agree to:</p>
@@ -100,7 +100,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-semibold text-white">
+            <h2 className="mb-4 text-lg font-semibold text-foreground">
               4. Intellectual Property
             </h2>
             <p>
@@ -118,7 +118,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-semibold text-white">
+            <h2 className="mb-4 text-lg font-semibold text-foreground">
               5. Disclaimer of Warranties
             </h2>
             <p>
@@ -146,7 +146,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-semibold text-white">
+            <h2 className="mb-4 text-lg font-semibold text-foreground">
               6. Limitation of Liability
             </h2>
             <p>
@@ -159,7 +159,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-semibold text-white">
+            <h2 className="mb-4 text-lg font-semibold text-foreground">
               7. Subscription & Unsubscription
             </h2>
             <p>
@@ -171,7 +171,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-semibold text-white">
+            <h2 className="mb-4 text-lg font-semibold text-foreground">
               8. Content & Recommendations
             </h2>
             <p>
@@ -188,7 +188,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-semibold text-white">
+            <h2 className="mb-4 text-lg font-semibold text-foreground">
               9. Modifications to Terms
             </h2>
             <p>
@@ -201,7 +201,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-semibold text-white">
+            <h2 className="mb-4 text-lg font-semibold text-foreground">
               10. Termination
             </h2>
             <p>
@@ -213,7 +213,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-semibold text-white">
+            <h2 className="mb-4 text-lg font-semibold text-foreground">
               11. Governing Law
             </h2>
             <p>
@@ -223,7 +223,7 @@ export default function TermsOfServicePage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-lg font-semibold text-white">
+            <h2 className="mb-4 text-lg font-semibold text-foreground">
               12. Contact
             </h2>
             <p>
@@ -243,20 +243,20 @@ export default function TermsOfServicePage() {
       </main>
 
       {/* Minimal footer */}
-      <footer className="border-t border-white/[0.06] py-8 text-center text-xs text-muted/60">
-        <div className="mx-auto max-w-4xl px-6">
+      <footer className="border-t border-border py-8 text-center text-xs text-muted/60">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link href="/" className="transition-colors hover:text-white">
+            <Link href="/" className="transition-colors hover:text-foreground">
               Home
             </Link>
-            <span className="text-white/10">·</span>
+            <span className="text-base-950/10">·</span>
             <Link
               href="/privacy"
-              className="transition-colors hover:text-white"
+              className="transition-colors hover:text-foreground"
             >
               Privacy Policy
             </Link>
-            <span className="text-white/10">·</span>
+            <span className="text-base-950/10">·</span>
             <span>© {new Date().getFullYear()} Recon</span>
           </div>
         </div>

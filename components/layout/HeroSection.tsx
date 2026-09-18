@@ -1,17 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
+import axios from "axios";
 import type { Movie } from "@/lib/types";
-import { CTAButton } from "@/components/ui/CTAButton";
+import { Button, ButtonLink } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Field";
+import { Icon } from "@/components/ui/Icon";
 import { RatingBadge } from "@/components/movie/RatingBadge";
 import { GenreTag } from "@/components/movie/GenreTag";
 import { subscribeUser } from "@/services/subscribe";
-import axios from "axios";
-import { WaitlistForm } from "../email/WaitlistForm";
+import { cn } from "@/lib/utils";
+import { SectionHeader } from "@/components/landing/Section";
 
 const SLIDE_INTERVAL_MS = 6000;
 
@@ -21,11 +23,11 @@ function heroImage(movie: Movie) {
 
 function HeroBackdropImage({
   movie,
-  priority,
+  preload,
   className,
 }: {
   movie: Movie;
-  priority?: boolean;
+  preload?: boolean;
   className?: string;
 }) {
   const [src, setSrc] = useState(heroImage(movie));
@@ -39,7 +41,7 @@ function HeroBackdropImage({
       src={src}
       alt=""
       fill
-      priority={priority}
+      preload={preload}
       className={className}
       sizes="100vw"
       onError={() => {
@@ -140,12 +142,13 @@ export function HeroSection({
 
   return (
     <section
-      className="relative min-h-[92vh] overflow-hidden pt-16"
+      className="relative isolate overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Full-bleed rotating backdrop — stacked slides for reliable crossfade */}
-      <div className="absolute inset-0">
+      {/* Rotating backdrop — stacked slides for a reliable crossfade. On phones
+          it's a banner behind the top of the content, not the full section. */}
+      <div className="absolute inset-x-0 top-0 -z-10 h-[34rem] sm:h-full">
         {previewMovies.map((movie, i) => (
           <motion.div
             key={movie.id}
@@ -160,44 +163,35 @@ export function HeroSection({
           >
             <HeroBackdropImage
               movie={movie}
-              priority={i === 0}
+              preload={i === 0}
               className="object-cover object-[center_20%]"
             />
           </motion.div>
         ))}
+        {/* Cinematic overlays */}
+        <div aria-hidden className="absolute inset-0 bg-linear-to-t from-base-0 via-base-0/70 to-base-0/20 sm:bg-linear-to-r sm:from-base-0 sm:via-base-0/85 sm:to-base-0/10" />
+        <div aria-hidden className="absolute inset-0 bg-linear-to-t from-base-0 via-transparent to-transparent" />
       </div>
 
-      {/* Cinematic dark overlays */}
-      <div
-        className="pointer-events-none absolute inset-0 bg-linear-to-r from-black from-0% via-black/92 via-45% to-black/25"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute inset-0 bg-linear-to-t from-black via-black/50 via-35% to-transparent"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute inset-0 bg-black/20"
-        aria-hidden
-      />
-
-      {/* Content — left-aligned like StreamVid Home 7 */}
-      <div className="relative z-10 mx-auto flex min-h-[calc(92vh-4rem)] mt-10 max-w-7xl flex-col justify-end px-6 pb-28 pt-8 lg:justify-center lg:pb-20">
-        <div className="grid items-end gap-10 lg:grid-cols-[1fr_auto] lg:items-center">
-          <div className="max-w-2xl">
-            <motion.p
+      <div className="mx-auto flex min-h-svh max-w-7xl flex-col justify-end px-4 pb-10 pt-[calc(6rem+env(safe-area-inset-top))] sm:px-6 sm:pb-16 lg:justify-center lg:pb-20 lg:pt-28">
+        <div className="grid items-end gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-10">
+          <div className="min-w-0 max-w-2xl">
+            <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-3 inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-sm font-semibold uppercase tracking-widest text-white ring-1 ring-accent/20 shadow-sm"
+              className="mb-5 flex flex-wrap items-center gap-2"
             >
-              New picks every Friday
-            </motion.p>
-            <div className="flex items-center gap-2 text-xs font-medium tracking-wide text-muted my-5 uppercase">
-              <span className="inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
-              <p>Across every streaming service
-                
-              </p>
-            </div>
+              <span className="inline-flex h-7 items-center gap-2 rounded-full border border-accent-500/30 bg-accent-500/15 px-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground backdrop-blur-md">
+                <span className="relative flex size-1.5">
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent-500 opacity-75" />
+                  <span className="relative inline-flex size-1.5 rounded-full bg-accent-500" />
+                </span>
+                New picks every Friday
+              </span>
+              <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted">
+                Across every streaming service
+              </span>
+            </motion.div>
 
             <AnimatePresence mode="wait">
               <motion.div
@@ -207,108 +201,134 @@ export function HeroSection({
                 exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.45 }}
               >
-                <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+                <h1 className="text-balance text-[2.5rem] font-bold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
                   {activeMovie.title}
                 </h1>
 
-                <div className="mt-4 flex flex-wrap items-center gap-3">
+                <div className="mt-4 flex flex-wrap items-center gap-2">
                   <RatingBadge rating={activeMovie.imdbRating} />
                   {activeMovie.year && (
-                    <span className="rounded-md bg-card px-2.5 py-1 text-xs font-medium text-muted ring-1 ring-border">
+                    <span className="inline-flex h-6 items-center rounded-md border border-border bg-surface/70 px-2.5 text-xs font-medium text-muted">
                       {activeMovie.year}
                     </span>
                   )}
-                  {activeMovie.watchUrl && (
-                    <a
-                      href={activeMovie.watchUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rounded-md bg-accent/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white ring-1 ring-accent/30 transition-colors hover:bg-accent/25"
-                    >
-                      Where to watch
-                    </a>
-                  )}
-                </div>
-
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {activeMovie.genre.map((g) => (
+                  {activeMovie.genre.slice(0, 3).map((g) => (
                     <GenreTag key={g} genre={g} />
                   ))}
                 </div>
 
-                <p className="mt-4 max-w-xl text-base leading-relaxed text-muted line-clamp-3 sm:text-lg">
+                <p className="mt-4 line-clamp-3 max-w-xl text-[15px] leading-relaxed text-muted sm:text-lg">
                   {activeMovie.description}
                 </p>
 
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <a
-                    href={activeMovie.trailerUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <CTAButton size="md">Watch Trailer</CTAButton>
-                  </a>
-                  {/* <Link href="#">
-                    <CTAButton variant="secondary" size="md" type="button">
-                      More info
-                    </CTAButton>
-                  </Link> */}
-                </div>
+                {(activeMovie.trailerUrl || activeMovie.watchUrl) && (
+                  <div className="mt-6 grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:gap-3">
+                    {activeMovie.trailerUrl && (
+                      <ButtonLink href={activeMovie.trailerUrl} external color="neutral" className="sm:w-auto">
+                        <Icon name="play" />
+                        Trailer
+                      </ButtonLink>
+                    )}
+                    {activeMovie.watchUrl && (
+                      <ButtonLink
+                        href={activeMovie.watchUrl}
+                        external
+                        color="neutral"
+                        variant="soft"
+                        className="sm:w-auto"
+                      >
+                        Where to watch
+                        <Icon name="arrow-up-right" />
+                      </ButtonLink>
+                    )}
+                  </div>
+                )}
               </motion.div>
             </AnimatePresence>
 
+            {/* Slide rail — phones & tablets */}
+            {slideCount > 1 && (
+              <div className="mt-6 flex items-center gap-3 lg:hidden">
+                <div className="no-scrollbar -mx-1 flex flex-1 gap-2 overflow-x-auto px-1 py-1">
+                  {previewMovies.map((movie, i) => (
+                    <button
+                      key={movie.id}
+                      type="button"
+                      onClick={() => goTo(i)}
+                      aria-label={`Show ${movie.title}`}
+                      aria-current={i === activeIndex ? "true" : undefined}
+                      className={cn(
+                        "relative h-16 w-11 shrink-0 overflow-hidden rounded-lg ring-2 transition-all",
+                        i === activeIndex ? "ring-accent-500" : "opacity-60 ring-transparent",
+                      )}
+                    >
+                      <HeroPosterThumb movie={movie} alt="" sizes="44px" />
+                    </button>
+                  ))}
+                </div>
+                <SlideArrows onPrev={() => goTo(activeIndex - 1)} onNext={next} />
+              </div>
+            )}
+
             {/* Newsletter CTA */}
-            <div id="subscribe" className="mt-10 border-t border-border pt-8">
-              <p className="text-lg font-semibold text-white sm:text-xl">
+            <div
+              id="subscribe"
+              className="mt-8 scroll-mt-24 rounded-3xl border border-border bg-base-0/70 p-5 shadow-pop backdrop-blur-xl sm:p-6"
+            >
+              <p className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">
                 Discover high-rated movies every Friday
               </p>
-              <p className="mt-1 text-sm text-muted">
-                Curated picks rated on IMDb, with where to stream each one —
-                free weekly newsletter.
-              </p>
-              <p className="mt-1 text-xs italic text-muted/80">
-                Across Netflix, Prime Video, Max, Apple TV+ and more.
+              <p className="mt-1 text-sm leading-relaxed text-muted">
+                Curated picks rated on IMDb, with where to stream each one — free
+                weekly newsletter across Netflix, Prime Video, Max, Apple TV+ and more.
               </p>
 
-              <form
-                onSubmit={handleSubmit}
-                className="mt-5 flex w-full max-w-3xl flex-col gap-3 sm:flex-row"
-              >
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => onEmailChange(e.target.value)}
-                  placeholder="you@email.com"
-                  disabled={loading}
-                  className="flex-1 rounded-full border border-border bg-black/40 px-4 py-3.5 text-white placeholder:text-muted backdrop-blur-md focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
-                />
-                <CTAButton type="submit" size="md" loading={loading}>
-                  Get Weekly Picks
-                </CTAButton>
-              </form>
-
-              {submitted && (
-                <p className="mt-3 text-sm text-success">
+              {submitted ? (
+                <div className="mt-5 flex items-center gap-3 rounded-2xl border border-green-150 bg-green-50 px-4 py-3.5 text-sm text-foreground">
+                  <Icon name="check-circle" className="text-green-500" />
                   You&apos;re on the list! Check your inbox this Friday.
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} noValidate className="mt-5 flex flex-col gap-2.5 sm:flex-row">
+                  <label htmlFor="hero-email" className="sr-only">
+                    Email address
+                  </label>
+                  <Input
+                    id="hero-email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    required
+                    size="lg"
+                    value={email}
+                    onChange={(e) => onEmailChange(e.target.value)}
+                    placeholder="you@email.com"
+                    disabled={loading}
+                    aria-invalid={submitError ? true : undefined}
+                    aria-describedby={submitError ? "hero-email-error" : undefined}
+                    className="rounded-full bg-base-100/80 px-5"
+                  />
+                  <Button type="submit" size="lg" loading={loading} className="sm:w-auto" block>
+                    Get weekly picks
+                    {!loading && <Icon name="arrow-right" />}
+                  </Button>
+                </form>
+              )}
+              {submitError && !submitted && (
+                <p id="hero-email-error" role="alert" className="mt-2.5 px-2 text-sm text-red-500">
+                  {submitError}
                 </p>
               )}
+              <p className="mt-3 flex items-center gap-1.5 px-1 text-xs text-subtle">
+                <Icon name="shield" className="size-3.5" />
+                One email a week. Unsubscribe in one click.
+              </p>
             </div>
-
-            {/* Join the Waitlist */}
-            {/* <div className="mt-10 border-t border-border pt-8 space-y-3.5">
-              <p className="text-lg font-semibold text-white sm:text-xl">
-                Join the waitlist for Recon
-              </p>
-              <p className="mt-1 text-sm text-muted">
-                Get early access to personalized movie recommendations and more.
-              </p>
-              <WaitlistForm />
-            </div> */}
           </div>
-          {/* Poster thumbnail picker (right on desktop) */}
+
+          {/* Poster picker — desktop rail */}
           {slideCount > 1 && (
-            <div className="hidden flex-col gap-2 lg:flex">
+            <div className="hidden flex-col items-center gap-2.5 lg:flex">
               {previewMovies.map((movie, i) => (
                 <button
                   key={movie.id}
@@ -316,230 +336,136 @@ export function HeroSection({
                   onClick={() => goTo(i)}
                   aria-label={`Show ${movie.title}`}
                   aria-current={i === activeIndex ? "true" : undefined}
-                  className={[
-                    "group relative h-[72px] w-[48px] overflow-hidden rounded-lg ring-2 transition-all duration-300",
+                  className={cn(
+                    "relative h-21 w-14 overflow-hidden rounded-xl ring-2 transition-all duration-300",
                     i === activeIndex
-                      ? "ring-accent scale-105 shadow-lg shadow-accent/30"
-                      : "ring-border/80 opacity-60 hover:opacity-100 hover:ring-border",
-                  ].join(" ")}
-                >
-                  <HeroPosterThumb
-                    movie={movie}
-                    alt={movie.title}
-                    sizes="48px"
-                  />
-                  {i === activeIndex && (
-                    <span className="absolute inset-0 bg-accent/10" />
+                      ? "scale-105 shadow-glow ring-accent-500"
+                      : "opacity-50 ring-base-950/10 hover:opacity-100",
                   )}
+                >
+                  <HeroPosterThumb movie={movie} alt={movie.title} sizes="56px" />
                 </button>
               ))}
+              <div className="mt-2">
+                <SlideArrows onPrev={() => goTo(activeIndex - 1)} onNext={next} vertical />
+              </div>
             </div>
           )}
         </div>
-
-        {/* Mobile / bottom slide indicators */}
-        {slideCount > 1 && (
-          <motion.div className="mt-8 flex items-center justify-between gap-4 lg:mt-10">
-            <div className="flex gap-2 overflow-x-auto pb-1 lg:hidden">
-              {previewMovies.map((movie, i) => (
-                <button
-                  key={movie.id}
-                  type="button"
-                  onClick={() => goTo(i)}
-                  aria-label={`Show ${movie.title}`}
-                  className={[
-                    "relative h-16 w-11 shrink-0 overflow-hidden rounded-md ring-2 transition-all",
-                    i === activeIndex
-                      ? "ring-accent"
-                      : "ring-border/80 opacity-70",
-                  ].join(" ")}
-                >
-                  <HeroPosterThumb movie={movie} alt="" sizes="44px" />
-                </button>
-              ))}
-            </div>
-
-            <div className="hidden items-center gap-2 sm:flex">
-              <button
-                type="button"
-                onClick={() => goTo(activeIndex - 1)}
-                aria-label="Previous slide"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-card text-white ring-1 ring-border transition hover:bg-border"
-              >
-                <ChevronLeftIcon />
-              </button>
-              <div className="flex gap-1.5">
-                {previewMovies.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => goTo(i)}
-                    aria-label={`Go to slide ${i + 1}`}
-                    className={[
-                      "h-1.5 rounded-full transition-all duration-300",
-                      i === activeIndex
-                        ? "w-8 bg-accent"
-                        : "w-1.5 bg-border hover:bg-border",
-                    ].join(" ")}
-                  />
-                ))}
-              </div>
-              <button
-                type="button"
-                onClick={next}
-                aria-label="Next slide"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-card text-white ring-1 ring-border transition hover:bg-border"
-              >
-                <ChevronRightIcon />
-              </button>
-            </div>
-          </motion.div>
-        )}
       </div>
     </section>
   );
 }
 
-function ChevronLeftIcon() {
+function SlideArrows({
+  onPrev,
+  onNext,
+  vertical = false,
+}: {
+  onPrev: () => void;
+  onNext: () => void;
+  vertical?: boolean;
+}) {
   return (
-    <svg
-      className="h-4 w-4"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={2}
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-    </svg>
-  );
-}
-
-function ChevronRightIcon() {
-  return (
-    <svg
-      className="h-4 w-4"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={2}
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-    </svg>
+    <div className={cn("flex shrink-0 gap-2", vertical && "flex-col")}>
+      <Button color="neutral" variant="soft" size="icon-sm" onClick={onPrev} aria-label="Previous slide">
+        <Icon name={vertical ? "chevron-down" : "chevron-left"} className={cn(vertical && "rotate-180")} />
+      </Button>
+      <Button color="neutral" variant="soft" size="icon-sm" onClick={onNext} aria-label="Next slide">
+        <Icon name={vertical ? "chevron-down" : "chevron-right"} />
+      </Button>
+    </div>
   );
 }
 
 export function HeroPreviewSection({ movies }: { movies: Movie[] }) {
   return (
-    <motion.section
-      className="relative overflow-hidden border-t border-border bg-background/80 py-24"
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-    >
-      <div className="absolute left-1/2 top-0 h-[280px] w-[320px] -translate-x-1/2 rounded-full bg-accent/10 blur-3xl" />
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="mb-12 text-center">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.35em] text-accent">
-            Featured picks
-          </p>
-          <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            This week's preview
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted sm:text-lg">
-            A premium sneak peek of the Netflix movies that land in your inbox
-            every Friday.
-          </p>
-        </div>
+    <section className="relative overflow-hidden border-t border-border py-16 sm:py-24">
+      <div aria-hidden className="absolute left-1/2 top-0 h-72 w-[36rem] max-w-full -translate-x-1/2 rounded-full bg-accent-500/10 blur-3xl" />
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+        <SectionHeader
+          eyebrow="Featured picks"
+          title="This week's preview"
+          lead="A sneak peek of the movies landing in your inbox this Friday — with where to stream every one."
+        />
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* Phones: a swipeable snap rail. md+: a grid. */}
+        <div className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-2 md:mx-0 md:grid md:snap-none md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 lg:grid-cols-3">
           {movies.map((movie, i) => (
-            <motion.div
+            <motion.article
               key={movie.id}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ delay: i * 0.12, duration: 0.6, ease: "easeOut" }}
-              className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-0 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.55)] backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_35px_90px_-35px_rgba(79,70,229,0.35)]"
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ delay: i * 0.08, duration: 0.5, ease: "easeOut" }}
+              className="group relative flex w-[82%] shrink-0 snap-start flex-col overflow-hidden rounded-3xl border border-border bg-surface shadow-card transition-[border-color,transform] duration-300 xs:w-[20rem] md:w-auto md:hover:-translate-y-1 md:hover:border-accent-500/40"
             >
-              <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-r from-accent/20 via-transparent to-white/10 opacity-80" />
-              <div className="relative overflow-hidden rounded-[2rem] bg-card">
-                <div className="relative aspect-[16/10] overflow-hidden">
-                  <Image
-                    src={movie.poster}
-                    alt={movie.title}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                  <div className="absolute right-4 top-4 rounded-full bg-black/40 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-white backdrop-blur-sm">
+              <div className="relative aspect-16/10 overflow-hidden">
+                <Image
+                  src={movie.poster}
+                  alt={movie.title}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="(max-width: 768px) 82vw, 33vw"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-surface via-surface/10 to-transparent" />
+                <div className="absolute left-3 top-3">
+                  <RatingBadge rating={movie.imdbRating} />
+                </div>
+                {movie.year && (
+                  <span className="absolute right-3 top-3 rounded-full bg-base-0/60 px-2.5 py-1 text-[11px] font-semibold tabular-nums text-foreground backdrop-blur-sm">
                     {movie.year}
-                  </div>
-                </div>
-
-                <div className="space-y-3 p-5">
-                  <div className="flex items-center justify-between gap-3">
-                    <h3 className="text-lg font-semibold text-white">
-                      {movie.title}
-                    </h3>
-                    <div className="rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-accent ring-1 ring-accent/20">
-                      {movie.imdbRating}
-                    </div>
-                  </div>
-                  <p className="text-sm leading-6 text-muted line-clamp-3">
-                    {movie.description}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-2">
-                    {movie.genre.slice(0, 3).map((genre) => (
-                      <span
-                        key={genre}
-                        className="rounded-full bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-muted ring-1 ring-white/10"
-                      >
-                        {genre}
-                      </span>
-                    ))}
-                  </div>
-
-                  {(movie.trailerUrl || movie.watchUrl) && (
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      {movie.trailerUrl && (
-                        <a
-                          href={movie.trailerUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 min-w-[8.5rem]"
-                        >
-                          <CTAButton
-                            variant="secondary"
-                            size="sm"
-                            fullWidth
-                            type="button"
-                          >
-                            Watch Trailer
-                          </CTAButton>
-                        </a>
-                      )}
-                      {movie.watchUrl && (
-                        <a
-                          href={movie.watchUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 min-w-[8.5rem]"
-                        >
-                          <CTAButton size="sm" fullWidth type="button">
-                            Click to watch
-                          </CTAButton>
-                        </a>
-                      )}
-                    </div>
-                  )}
-                </div>
+                  </span>
+                )}
               </div>
-            </motion.div>
+
+              <div className="flex flex-1 flex-col gap-3 p-4 sm:p-5">
+                <h3 className="line-clamp-1 text-lg font-semibold tracking-tight text-foreground">
+                  {movie.title}
+                </h3>
+                <p className="line-clamp-3 text-sm leading-relaxed text-muted">
+                  {movie.description}
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {movie.genre.slice(0, 3).map((genre) => (
+                    <GenreTag key={genre} genre={genre} size="sm" />
+                  ))}
+                </div>
+
+                {(movie.trailerUrl || movie.watchUrl) && (
+                  <div className="mt-auto grid grid-cols-2 gap-2 pt-2">
+                    {movie.trailerUrl && (
+                      <ButtonLink
+                        href={movie.trailerUrl}
+                        external
+                        color="secondary"
+                        size="sm"
+                        block
+                        className={cn("h-10", !movie.watchUrl && "col-span-2")}
+                      >
+                        <Icon name="play" />
+                        Trailer
+                      </ButtonLink>
+                    )}
+                    {movie.watchUrl && (
+                      <ButtonLink
+                        href={movie.watchUrl}
+                        external
+                        size="sm"
+                        block
+                        className={cn("h-10", !movie.trailerUrl && "col-span-2")}
+                      >
+                        Watch
+                        <Icon name="arrow-up-right" />
+                      </ButtonLink>
+                    )}
+                  </div>
+                )}
+              </div>
+            </motion.article>
           ))}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

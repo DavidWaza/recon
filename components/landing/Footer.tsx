@@ -15,14 +15,14 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-white/[0.06] bg-[#0d1020]">
+    <footer className="relative border-t border-border bg-base-50/60">
       {/* Top gradient line */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent-500/40 to-transparent" />
 
-      <div className="mx-auto max-w-6xl px-6 pb-10 pt-16">
-        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="pb-safe mx-auto max-w-6xl px-4 pt-12 sm:px-6 sm:pt-16">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
           {/* Brand column */}
-          <div className="lg:col-span-2">
+          <div className="col-span-2">
             <Link href="/" className="inline-flex items-center gap-3">
               <Image
                 src="/icon.png"
@@ -31,7 +31,7 @@ export function Footer() {
                 height={32}
                 className="rounded-lg"
               />
-              <span className="text-lg font-bold text-white">Recon</span>
+              <span className="text-lg font-bold text-foreground">Recon</span>
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">
               Curated, high-rated movie recommendations from across every
@@ -40,15 +40,15 @@ export function Footer() {
             </p>
             {/* Contact Info */}
             <div className="mt-6 space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/40">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-subtle">
                 Contact
               </p>
               <a
                 href="mailto:moviereconn@gmail.com"
-                className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-accent"
+                className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-accent-500"
               >
                 <svg
-                  className="h-4 w-4 text-accent/60 transition-colors group-hover:text-accent"
+                  className="h-4 w-4 text-accent-500/70 transition-colors group-hover:text-accent-500"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -67,15 +67,15 @@ export function Footer() {
 
           {/* Product links */}
           <div>
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-white/40">
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-subtle">
               Product
             </p>
-            <ul className="space-y-3">
+            <ul className="space-y-1.5">
               {footerLinks.product.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted transition-colors duration-200 hover:text-white"
+                    className="inline-flex min-h-8 items-center text-sm text-muted transition-colors duration-200 hover:text-foreground"
                   >
                     {link.label}
                   </Link>
@@ -86,15 +86,15 @@ export function Footer() {
 
           {/* Legal links */}
           <div>
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-white/40">
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-subtle">
               Legal
             </p>
-            <ul className="space-y-3">
+            <ul className="space-y-1.5">
               {footerLinks.legal.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted transition-colors duration-200 hover:text-white"
+                    className="inline-flex min-h-8 items-center text-sm text-muted transition-colors duration-200 hover:text-foreground"
                   >
                     {link.label}
                   </Link>
@@ -105,11 +105,11 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-8 sm:flex-row">
-          <p className="text-xs text-muted/60">
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-border py-6 text-center sm:flex-row sm:text-left">
+          <p className="text-xs text-subtle">
             © {new Date().getFullYear()} Recon. All rights reserved.
           </p>
-          <div className="flex items-center gap-1.5 text-xs text-muted/60">
+          <div className="flex items-center gap-1.5 text-xs text-subtle">
             <svg
               className="h-3.5 w-3.5 text-green-500"
               viewBox="0 0 24 24"

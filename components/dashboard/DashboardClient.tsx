@@ -64,7 +64,7 @@ export function DashboardClient({ initialTab = "home" }: DashboardClientProps) {
   const showFilters = activeTab !== "settings" && activeTab !== "favorites";
 
   return (
-    <div className="flex min-h-screen flex-col bg-background lg:flex-row">
+    <div className="flex min-h-dvh flex-col bg-background lg:flex-row">
       <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
 
       <main className="flex-1 overflow-y-auto">
@@ -158,7 +158,7 @@ function DashboardHeader({
       animate={{ opacity: 1, y: 0 }}
       className="mb-8"
     >
-      <h1 className="text-2xl font-bold text-white sm:text-3xl">{title}</h1>
+      <h1 className="text-2xl font-bold text-foreground sm:text-3xl">{title}</h1>
       <p className="mt-1 text-muted">{subtitle}</p>
     </motion.div>
   );
@@ -188,7 +188,7 @@ function FilterBar({
         <select
           value={genreFilter}
           onChange={(e) => onGenreChange(e.target.value)}
-          className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-white focus:border-accent/50 focus:outline-none"
+          className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:border-accent/50 focus:outline-none"
         >
           <option value="all">All genres</option>
           {allGenres.map((g) => (
@@ -202,7 +202,7 @@ function FilterBar({
         <select
           value={sortBy}
           onChange={(e) => onSortChange(e.target.value as SortOption)}
-          className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-white focus:border-accent/50 focus:outline-none"
+          className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:border-accent/50 focus:outline-none"
         >
           <option value="rating-desc">IMDb rating (high → low)</option>
           <option value="rating-asc">IMDb rating (low → high)</option>
@@ -220,8 +220,8 @@ function FilterBar({
               className={[
                 "rounded-lg px-4 py-2 text-sm font-medium capitalize transition-all",
                 viewMode === mode
-                  ? "bg-accent text-white shadow"
-                  : "text-muted hover:text-white",
+                  ? "bg-accent text-foreground shadow"
+                  : "text-muted hover:text-foreground",
               ].join(" ")}
             >
               {mode === "weekly" ? "This Week" : "Trending"}
@@ -237,7 +237,7 @@ function SettingsPanel() {
   return (
     <div className="max-w-lg space-y-6">
       <div className="rounded-2xl border border-border bg-card p-6">
-        <h3 className="font-semibold text-white">Email preferences</h3>
+        <h3 className="font-semibold text-foreground">Email preferences</h3>
         <p className="mt-1 text-sm text-muted">
           Receive weekly picks every Friday at 9:00 AM
         </p>
@@ -251,7 +251,7 @@ function SettingsPanel() {
         </label>
       </div>
       <div className="rounded-2xl border border-border bg-card p-6">
-        <h3 className="font-semibold text-white">Minimum rating</h3>
+        <h3 className="font-semibold text-foreground">Minimum rating</h3>
         <p className="mt-1 text-sm text-muted">Only show movies rated 7.0+</p>
         <input
           type="range"

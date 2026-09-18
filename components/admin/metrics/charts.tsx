@@ -53,7 +53,7 @@ function LegendRow({ items }: { items: { name: string; color: string }[] }) {
 export function RevenueMixChart({ data }: { data: RevenueMixPoint[] }) {
   return (
     <div>
-      <div className="h-64">
+      <div className="h-56 sm:h-72">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
             <CartesianGrid stroke={CHART.grid} strokeWidth={1} vertical={false} />
@@ -107,7 +107,7 @@ export function GenrePanels({ data }: { data: GenreRow[] }) {
     margin: { top: 0, right: 40, bottom: 0, left: 0 },
   };
   return (
-    <div className="grid grid-cols-2 gap-2">
+    <div className="grid gap-5 sm:grid-cols-2 sm:gap-3">
       <div>
         <div className="mb-1 text-xs font-medium text-muted">Stated preference</div>
         <div style={{ height }}>
@@ -344,7 +344,7 @@ function SlotTip({ active, payload }: SlotTipProps) {
   const row = payload[0].payload;
   if (!row) return null;
   return (
-    <div className="rounded-lg border border-border bg-[#1b2140] px-3 py-2 text-xs shadow-lg">
+    <div className="rounded-lg border border-border-strong bg-base-100 px-3 py-2 text-xs shadow-pop">
       <div className="mb-1 text-muted">{row.title}</div>
       <div className="font-semibold text-foreground tabular-nums">
         {pct1(row.watchIntentRate)} <span className="font-normal text-muted">watch intent</span>

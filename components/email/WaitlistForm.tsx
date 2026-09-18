@@ -32,13 +32,13 @@ export function WaitlistForm() {
 
   if (position) {
     return (
-      <div className="text-center p-8 bg-[#141414] border border-[#1f1f1f] rounded-2xl">
-        <p className="text-sm font-bold uppercase tracking-widest text-[#E50914] mb-2">
+      <div className="rounded-2xl border border-border bg-surface p-6 text-center shadow-card sm:p-8">
+        <p className="text-sm font-bold uppercase tracking-widest text-accent-500 mb-2">
           You're in!
         </p>
-        <p className="text-5xl font-black text-white mb-2">#{position}</p>
-        <p className="text-[#a3a3a3] text-sm">in the waitlist</p>
-        {/* <p className="mt-4 text-sm text-[#a3a3a3]">
+        <p className="text-5xl font-black text-foreground mb-2">#{position}</p>
+        <p className="text-muted text-sm">in the waitlist</p>
+        {/* <p className="mt-4 text-sm text-muted">
           Check your inbox for your confirmation email.
         </p> */}
       </div>
@@ -54,13 +54,13 @@ export function WaitlistForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@email.com"
-          className="w-full bg-[#0f0f0f] border border-[#2a2a2a] rounded-xl px-4 py-3.5 text-white placeholder:text-[#4a4a4a] focus:outline-none focus:border-[#E50914]/50 focus:ring-1 focus:ring-[#E50914]/20"
+          className="h-12 w-full rounded-full border border-border bg-surface-sunken px-5 text-foreground placeholder:text-subtle focus:border-accent-500 focus:outline-none focus:ring-4 focus:ring-accent-500/15"
         />
       </div>
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-[#E50914] hover:bg-[#c40812] disabled:opacity-50 text-white font-bold py-3.5 rounded-xl transition-colors"
+        className="h-12 w-full rounded-full bg-accent-500 font-semibold text-base-950 shadow-glow transition-colors hover:bg-accent-600 disabled:opacity-50"
       >
         {loading ? "Joining..." : "Join the Waitlist"}
       </button>

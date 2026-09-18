@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
-import { CTAButton } from "@/components/ui/CTAButton";
 import { savePreferences } from "@/services/preferences";
 import { allGenres } from "@/lib/data/movies";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
+import { Textarea } from "@/components/ui/Field";
+import { Icon } from "@/components/ui/Icon";
 
 type PreferenceQuizProps = {
   /** Subscriber row id returned from /api/subscribe. */
@@ -22,6 +25,9 @@ type Step = 0 | 1 | 2;
  * (favorite_genres, disliked_genres, liked_movies). Even rough data here is
  * what later powers personalization, so we keep it optional to protect signup
  * conversion.
+ *
+ * Layout: bottom sheet on phones (header and actions pinned, genre list
+ * scrolls between them), centred dialog from `sm` up.
  */
 export function PreferenceQuiz({ subscriberId, onClose }: PreferenceQuizProps) {
   const [step, setStep] = useState<Step>(0);
@@ -29,6 +35,16 @@ export function PreferenceQuiz({ subscriberId, onClose }: PreferenceQuizProps) {
   const [disliked, setDisliked] = useState<string[]>([]);
   const [loved, setLoved] = useState("");
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [onClose]);
 
   const toggle = (
     value: string,
@@ -86,7 +102,7 @@ export function PreferenceQuiz({ subscriberId, onClose }: PreferenceQuizProps) {
           genres={allGenres}
           selected={disliked}
           onToggle={(g) => toggle(g, disliked, setDisliked)}
-          tone="muted"
+          tone="danger"
         />
       ),
     },
@@ -94,12 +110,13 @@ export function PreferenceQuiz({ subscriberId, onClose }: PreferenceQuizProps) {
       title: "Name a few movies you love",
       subtitle: "Optional — separate with commas. Helps us read your taste.",
       body: (
-        <textarea
+        <Textarea
           value={loved}
           onChange={(e) => setLoved(e.target.value)}
           rows={3}
+          aria-label="Movies you love"
           placeholder="e.g. Dune: Part Two, Parasite, Spider-Verse"
-          className="w-full resize-none rounded-xl border border-border bg-black/40 px-4 py-3 text-sm text-white placeholder:text-muted focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
+          className="resize-none"
         />
       ),
     },
@@ -109,10 +126,9 @@ export function PreferenceQuiz({ subscriberId, onClose }: PreferenceQuizProps) {
   const current = steps[step];
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center px-4">
-      {/* Backdrop */}
+    <div className="fixed inset-0 z-70 flex items-end justify-center sm:items-center sm:p-4">
       <motion.div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-base-0/75 backdrop-blur-sm"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -124,75 +140,78 @@ export function PreferenceQuiz({ subscriberId, onClose }: PreferenceQuizProps) {
         role="dialog"
         aria-modal="true"
         aria-label="Tell us your taste"
-        initial={{ opacity: 0, y: 24, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 24, scale: 0.97 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-card p-7 shadow-2xl sm:p-8"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 40 }}
+        transition={{ type: "spring", bounce: 0.12, duration: 0.45 }}
+        className="relative flex max-h-[92dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border border-border bg-surface shadow-pop sm:max-h-[85dvh] sm:rounded-3xl"
       >
-        {/* Skip */}
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute right-5 top-5 text-xs font-medium text-muted transition-colors hover:text-white"
-        >
-          Skip
-        </button>
+        {/* Header — pinned */}
+        <div className="shrink-0 px-5 pt-3 sm:px-8 sm:pt-7">
+          <div aria-hidden className="mx-auto mb-4 h-1 w-10 rounded-full bg-base-500 sm:hidden" />
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-500">
+              You&apos;re in · Step {step + 1} of {steps.length}
+            </p>
+            <Button color="secondary" variant="ghost" size="xs" onClick={onClose} className="-mr-2">
+              Skip
+            </Button>
+          </div>
 
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">
-          You&apos;re in · Step {step + 1} of {steps.length}
-        </p>
-
-        {/* Progress */}
-        <div className="mt-3 flex gap-1.5">
-          {steps.map((_, i) => (
-            <span
-              key={i}
-              className={[
-                "h-1 flex-1 rounded-full transition-colors duration-300",
-                i <= step ? "bg-accent" : "bg-border",
-              ].join(" ")}
-            />
-          ))}
+          <div className="mt-3 flex gap-1.5">
+            {steps.map((_, i) => (
+              <span
+                key={i}
+                className={cn(
+                  "h-1 flex-1 rounded-full transition-colors duration-300",
+                  i <= step ? "bg-accent-500" : "bg-base-400",
+                )}
+              />
+            ))}
+          </div>
         </div>
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, x: 16 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -16 }}
-            transition={{ duration: 0.25 }}
-          >
-            <h2 className="mt-6 text-xl font-bold text-white sm:text-2xl">
-              {current.title}
-            </h2>
-            <p className="mt-1.5 text-sm text-muted">{current.subtitle}</p>
-            <div className="mt-5">{current.body}</div>
-          </motion.div>
-        </AnimatePresence>
+        {/* Body — the only part that scrolls */}
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-2 sm:px-8">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, x: 16 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -16 }}
+              transition={{ duration: 0.22 }}
+            >
+              <h2 className="mt-5 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                {current.title}
+              </h2>
+              <p className="mt-1.5 text-sm text-muted">{current.subtitle}</p>
+              <div className="mt-5">{current.body}</div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-        <div className="mt-8 flex items-center justify-between">
-          <button
-            type="button"
+        {/* Actions — pinned, thumb-reachable */}
+        <div className="pb-safe flex shrink-0 items-center justify-between gap-3 border-t border-border bg-surface px-5 pt-4 sm:px-8 sm:pb-7">
+          <Button
+            color="secondary"
+            variant="ghost"
             onClick={() => setStep((s) => (s > 0 ? ((s - 1) as Step) : s))}
             disabled={step === 0}
-            className="text-sm font-medium text-muted transition-colors hover:text-white disabled:opacity-0"
+            className="disabled:opacity-0"
           >
-            ← Back
-          </button>
+            <Icon name="arrow-left" />
+            Back
+          </Button>
 
           {isLast ? (
-            <CTAButton size="md" loading={saving} onClick={submit}>
+            <Button loading={saving} onClick={submit}>
               Save my taste
-            </CTAButton>
+            </Button>
           ) : (
-            <CTAButton
-              size="md"
-              onClick={() => setStep((s) => ((s + 1) as Step))}
-            >
+            <Button onClick={() => setStep((s) => (s + 1) as Step)}>
               Continue
-            </CTAButton>
+              <Icon name="arrow-right" />
+            </Button>
           )}
         </div>
       </motion.div>
@@ -209,7 +228,7 @@ function GenreChips({
   genres: string[];
   selected: string[];
   onToggle: (genre: string) => void;
-  tone: "accent" | "muted";
+  tone: "accent" | "danger";
 }) {
   return (
     <div className="flex flex-wrap gap-2">
@@ -221,15 +240,18 @@ function GenreChips({
             type="button"
             onClick={() => onToggle(genre)}
             aria-pressed={active}
-            className={[
-              "rounded-full px-3.5 py-1.5 text-sm font-medium transition-all duration-200",
+            className={cn(
+              "inline-flex h-10 items-center gap-1.5 rounded-full border px-4 text-sm font-medium transition-colors duration-200",
               active
                 ? tone === "accent"
-                  ? "bg-accent text-white ring-1 ring-accent"
-                  : "bg-white/10 text-white ring-1 ring-white/30"
-                : "bg-black/30 text-muted ring-1 ring-border hover:text-white hover:ring-white/20",
-            ].join(" ")}
+                  ? "border-accent-500 bg-accent-500 text-base-950"
+                  : "border-red-150 bg-red-50 text-red-500"
+                : "border-border bg-base-100 text-muted hover:border-border-strong hover:text-foreground",
+            )}
           >
+            {active && (
+              <Icon name={tone === "accent" ? "check" : "close"} className="size-3.5" weight={2.5} />
+            )}
             {genre}
           </button>
         );

@@ -51,20 +51,20 @@ function FAQItem({
   onToggle: () => void;
 }) {
   return (
-    <div className="border-b border-white/[0.06]">
+    <div className="border-b border-border last:border-b-0">
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center justify-between py-6 text-left transition-colors duration-200 hover:text-accent"
+        className="group flex min-h-16 w-full items-center justify-between gap-4 py-4 text-left sm:py-5"
         aria-expanded={isOpen}
       >
-        <span className="pr-4 text-[15px] font-medium text-white sm:text-base">
+        <span className="text-[15px] font-medium text-foreground transition-colors group-hover:text-accent-500 sm:text-base">
           {faq.question}
         </span>
         <span
           className={[
-            "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/10 text-muted transition-all duration-300",
-            isOpen ? "rotate-45 border-accent/30 text-accent" : "",
+            "flex size-8 shrink-0 items-center justify-center rounded-full border border-border text-muted transition-all duration-300",
+            isOpen ? "rotate-45 border-accent-500/50 bg-accent-50 text-accent-500" : "",
           ].join(" ")}
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -81,7 +81,7 @@ function FAQItem({
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <p className="pb-6 pr-12 text-sm leading-relaxed text-muted">
+            <p className="pb-5 pr-2 text-sm leading-relaxed text-muted sm:pr-12">
               {faq.answer}
             </p>
           </motion.div>
@@ -95,23 +95,23 @@ export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="relative overflow-hidden border-t border-white/[0.04] py-28">
+    <section id="faq" className="relative scroll-mt-20 overflow-hidden border-t border-border/60 py-16 sm:py-24 lg:py-28">
       <div className="absolute inset-0">
-        <div className="absolute left-1/2 bottom-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
+        <div className="absolute left-1/2 bottom-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-accent-500/30 to-transparent" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-3xl px-6">
+      <div className="relative z-10 mx-auto max-w-3xl px-4 sm:px-6">
         <motion.div
-          className="mb-14 text-center"
+          className="mb-10 text-center sm:mb-14"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6 }}
         >
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.35em] text-accent">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-accent-500 sm:text-[13px]">
             Questions?
           </p>
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          <h2 className="text-balance text-[1.875rem] font-bold leading-tight tracking-tight text-foreground sm:text-4xl">
             Frequently Asked Questions
           </h2>
         </motion.div>
@@ -121,7 +121,7 @@ export function FAQ() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="rounded-2xl border border-white/[0.06] bg-white/[0.02] px-6 backdrop-blur-sm sm:px-8"
+          className="surface-glow rounded-3xl border border-border bg-surface px-4 shadow-card sm:px-8"
         >
           {faqs.map((faq, i) => (
             <FAQItem

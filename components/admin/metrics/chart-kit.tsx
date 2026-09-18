@@ -1,17 +1,24 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { cn } from "@/lib/utils";
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Icon } from "@/components/ui/Icon";
+import { StatusBadge } from "@/components/ui/Badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/Table";
 
-// Palette validated against the card surface (#11162a) with the dataviz
-// checks: lightness band, chroma floor, CVD separation, contrast.
+// Series palette validated against the card surface with the dataviz checks:
+// lightness band, chroma floor, CVD separation, contrast. Neutrals track the
+// base ramp in app/globals.css.
 export const CHART = {
   series: ["#3987e5", "#199e70", "#c98500", "#008300"],
   ordinal: ["#3987e5", "#256abf", "#184f95"],
-  grid: "#262c49",
-  axis: "#a1a1aa",
-  surface: "#11162a",
+  grid: "#1f2645",
+  axis: "#9aa3c8",
+  surface: "#0e1224",
   up: "#22c55e",
-  down: "#f87171",
+  down: "#f05252",
 };
 
 const MONTHS = [
@@ -56,7 +63,7 @@ export function ChartTip({ active, payload, label, format, labelFormat }: ChartT
   const heading =
     typeof label === "string" && labelFormat ? labelFormat(label) : label;
   return (
-    <div className="rounded-lg border border-border bg-[#1b2140] px-3 py-2 text-xs shadow-lg">
+    <div className="rounded-lg border border-border-strong bg-base-100 px-3 py-2 text-xs shadow-pop">
       {heading != null && heading !== "" && (
         <div className="mb-1 text-muted">{heading}</div>
       )}
@@ -91,67 +98,71 @@ interface ChartCardProps {
   children: ReactNode;
 }
 
-// Card shell with the accessible twin: every chart can flip to its data table.
+/**
+ * An assembled default over the Card parts: every chart can flip to its
+ * data table (the accessible twin). Screens needing a different arrangement
+ * compose Card/CardHeader/CardAction directly.
+ */
 export function ChartCard({ title, subtitle, table, badge, className, children }: ChartCardProps) {
   const [showTable, setShowTable] = useState(false);
   return (
-    <div className={`rounded-xl border border-border bg-card p-4 ${className ?? ""}`}>
-      <div className="mb-3 flex items-start justify-between gap-3">
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-            {badge}
-          </div>
-          {subtitle && <p className="mt-0.5 text-xs text-muted">{subtitle}</p>}
-        </div>
+    <Card className={cn("min-w-0", className)}>
+      <CardHeader>
+        <CardTitle>
+          {title}
+          {badge}
+        </CardTitle>
+        {subtitle && <CardDescription>{subtitle}</CardDescription>}
         {table && (
-          <button
-            type="button"
-            onClick={() => setShowTable((v) => !v)}
-            className="shrink-0 rounded-md border border-border px-2 py-1 text-xs text-muted transition-colors hover:text-foreground"
-          >
-            {showTable ? "Chart" : "Data"}
-          </button>
+          <CardAction>
+            <Button
+              color="secondary"
+              variant="outline"
+              size="xs"
+              onClick={() => setShowTable((v) => !v)}
+              aria-pressed={showTable}
+              className="h-8"
+            >
+              <Icon name={showTable ? "chart" : "table"} className="size-3.5" />
+              {showTable ? "Chart" : "Data"}
+            </Button>
+          </CardAction>
         )}
-      </div>
-      {showTable && table ? (
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b border-border text-left text-muted">
+      </CardHeader>
+      <CardContent className="min-w-0">
+        {showTable && table ? (
+          <Table className="text-xs">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
                 {table.columns.map((col, i) => (
-                  <th key={col} className={`py-1.5 pr-3 font-medium ${i > 0 ? "text-right" : ""}`}>
+                  <TableHead key={col} className={i > 0 ? "text-right" : ""}>
                     {col}
-                  </th>
+                  </TableHead>
                 ))}
-              </tr>
-            </thead>
-            <tbody className="tabular-nums">
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {table.rows.map((row, ri) => (
-                <tr key={ri} className="border-b border-border/50">
+                <TableRow key={ri}>
                   {row.map((cell, ci) => (
-                    <td key={ci} className={`py-1.5 pr-3 ${ci > 0 ? "text-right" : "text-foreground"}`}>
+                    <TableCell key={ci} className={ci > 0 ? "text-right" : "text-foreground"}>
                       {cell}
-                    </td>
+                    </TableCell>
                   ))}
-                </tr>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        children
-      )}
-    </div>
+            </TableBody>
+          </Table>
+        ) : (
+          children
+        )}
+      </CardContent>
+    </Card>
   );
 }
 
+/** Data provenance goes through the status registry, like every other state. */
 export function SourceBadge({ source }: { source: "live" | "sample" }) {
   if (source === "live") return null;
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-400">
-      <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-amber-400" />
-      Sample data
-    </span>
-  );
+  return <StatusBadge status={source} size="sm" />;
 }

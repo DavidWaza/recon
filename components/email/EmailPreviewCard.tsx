@@ -10,7 +10,7 @@ type EmailPreviewCardProps = {
 export function EmailPreviewCard({ movie, index }: EmailPreviewCardProps) {
   return (
     <article className="flex gap-4 border-b border-zinc-200 py-5 last:border-0 last:pb-0 first:pt-0">
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-white">
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-foreground">
         {index + 1}
       </span>
       <div className="min-w-0 flex-1">

@@ -39,7 +39,7 @@ export function AdBanner({ slot, className = "" }: AdBannerProps) {
       className={`mx-auto w-full max-w-4xl px-6 ${className}`}
       aria-label="Advertisement"
     >
-      <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] px-4 py-3">
+      <div className="overflow-hidden rounded-2xl border border-border bg-surface px-4 py-3">
         <p className="mb-2 text-center text-[10px] font-semibold uppercase tracking-[0.25em] text-muted/60">
           Sponsored
         </p>

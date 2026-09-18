@@ -2,100 +2,145 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { ButtonLink } from "@/components/ui/Button";
+import { Icon } from "@/components/ui/Icon";
 
 const navLinks = [
-  { label: "How It Works", href: "#how-it-works" },
+  { label: "How it works", href: "#how-it-works" },
   { label: "Why Recon", href: "#why-recon" },
   { label: "FAQ", href: "#faq" },
 ];
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Solidify the bar once the hero image scrolls under it.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Lock page scroll while the mobile menu is open; close it on Escape.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setIsOpen(false);
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
-      <div className="mx-auto max-w-7xl px-4 pt-4">
-        <nav className="relative flex items-center justify-between rounded-2xl border border-white/10 bg-black/60 px-5 py-3 backdrop-blur-xl">
-          <Link
-            href="/"
-            className="flex items-center gap-2.5"
-          >
+    <header className="fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)]">
+      <div className="mx-auto max-w-7xl px-3 pt-3 sm:px-4">
+        <nav
+          aria-label="Main"
+          className={cn(
+            "relative flex h-14 items-center justify-between rounded-2xl border px-3 pl-4 transition-[background-color,border-color,box-shadow] duration-300 sm:h-16 sm:px-4 sm:pl-5",
+            scrolled || isOpen
+              ? "border-border bg-base-0/85 shadow-pop backdrop-blur-xl"
+              : "border-base-950/10 bg-base-0/40 backdrop-blur-md",
+          )}
+        >
+          <Link href="/" className="flex items-center gap-2.5" onClick={() => setIsOpen(false)}>
             <Image
               src="/icon.png"
-              alt="Recon logo"
-              width={28}
-              height={28}
-              priority
-              className="rounded-lg"
+              alt=""
+              width={30}
+              height={30}
+              preload
+              className="rounded-lg ring-1 ring-base-950/10"
             />
-            <span className="text-sm font-bold text-white tracking-tight">Recon</span>
+            <span className="text-[15px] font-bold tracking-tight text-foreground">Recon</span>
           </Link>
 
           {/* Desktop links */}
-          <div className="hidden items-center gap-1 sm:flex">
+          <div className="hidden items-center gap-1 md:flex">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="rounded-lg px-3.5 py-2 text-[13px] font-medium text-muted transition-all duration-200 hover:bg-white/[0.06] hover:text-white"
+                className="rounded-lg px-3.5 py-2 text-[13px] font-medium text-muted transition-colors hover:bg-base-950/6 hover:text-foreground"
               >
                 {link.label}
               </a>
             ))}
-            <div className="ml-2 h-5 w-px bg-white/10" />
-            <a
-              href="#subscribe"
-              className="ml-2 rounded-full bg-accent px-4 py-2 text-[13px] font-semibold text-white shadow-lg shadow-accent/25 transition-all duration-200 hover:bg-accent-hover hover:shadow-accent/40 hover:scale-[1.02] active:scale-[0.98]"
-            >
-              Subscribe
-            </a>
+            <div className="mx-2 h-5 w-px bg-border" />
+            <ButtonLink href="#subscribe" size="sm">
+              Get weekly picks
+            </ButtonLink>
           </div>
 
-          {/* Mobile hamburger */}
-          <button
-            type="button"
-            onClick={() => setIsOpen(!isOpen)}
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-muted transition-colors hover:bg-white/[0.06] hover:text-white sm:hidden"
-            aria-label="Toggle menu"
-            aria-expanded={isOpen}
-          >
-            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-              {isOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-              )}
-            </svg>
-          </button>
-
-          {/* Mobile menu */}
-          {isOpen && (
-            <div className="absolute inset-x-0 top-full mt-2 rounded-2xl border border-white/10 bg-black/90 p-4 backdrop-blur-xl sm:hidden">
-              <div className="flex flex-col gap-1">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className="rounded-lg px-4 py-3 text-sm font-medium text-muted transition-colors hover:bg-white/[0.06] hover:text-white"
-                  >
-                    {link.label}
-                  </a>
-                ))}
-                <div className="my-2 h-px bg-white/10" />
-                <a
-                  href="#subscribe"
-                  onClick={() => setIsOpen(false)}
-                  className="rounded-full bg-accent px-4 py-3 text-center text-sm font-semibold text-white shadow-lg shadow-accent/25"
-                >
-                  Subscribe
-                </a>
-              </div>
-            </div>
-          )}
+          {/* Mobile: primary CTA stays visible, menu for the rest. */}
+          <div className="flex items-center gap-2 md:hidden">
+            <ButtonLink href="#subscribe" size="sm" className="h-9 px-3.5 text-[13px]" onClick={() => setIsOpen(false)}>
+              Subscribe
+            </ButtonLink>
+            <button
+              type="button"
+              onClick={() => setIsOpen((o) => !o)}
+              className="flex size-10 items-center justify-center rounded-xl text-foreground transition-colors hover:bg-base-950/6"
+              aria-label={isOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isOpen}
+              aria-controls="mobile-menu"
+            >
+              <Icon name={isOpen ? "close" : "menu"} weight={2} />
+            </button>
+          </div>
         </nav>
+
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              id="mobile-menu"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="mt-2 overflow-hidden rounded-2xl border border-border bg-base-0/95 p-2 shadow-pop backdrop-blur-xl md:hidden"
+            >
+              <ul className="flex flex-col">
+                {navLinks.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      onClick={() => setIsOpen(false)}
+                      className="flex h-12 items-center justify-between rounded-xl px-4 text-[15px] font-medium text-foreground transition-colors hover:bg-base-100"
+                    >
+                      {link.label}
+                      <Icon name="chevron-right" className="size-4 text-subtle" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-2 border-t border-border p-2 pt-3">
+                <ButtonLink href="#subscribe" block size="lg" onClick={() => setIsOpen(false)}>
+                  Get weekly picks — free
+                </ButtonLink>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
+
+      {/* Tap-outside to close. Sits under the bar, over the page. */}
+      {isOpen && (
+        <button
+          type="button"
+          aria-hidden
+          tabIndex={-1}
+          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 -z-10 bg-base-0/60 backdrop-blur-[2px] md:hidden"
+        />
+      )}
     </header>
   );
 }

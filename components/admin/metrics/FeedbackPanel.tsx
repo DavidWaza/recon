@@ -55,7 +55,7 @@ function Note({ note }: { note: FeedbackNote }) {
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="mt-1 text-xs font-medium text-accent transition-colors hover:text-accent-hover"
+          className="-mx-1 mt-1 rounded px-1 py-1 text-xs font-semibold text-accent-500 transition-colors hover:text-foreground"
         >
           {open ? "Less" : "More"}
         </button>
@@ -121,7 +121,7 @@ export function FeedbackPanel({ data }: { data: FeedbackSummary }) {
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="mt-2 w-full rounded-md border border-border py-1.5 text-xs text-muted transition-colors hover:text-foreground"
+          className="mt-3 h-10 w-full rounded-full border border-border text-xs font-semibold text-muted transition-colors hover:border-border-strong hover:bg-base-100 hover:text-foreground"
         >
           {expanded
             ? "Show less"
@@ -140,7 +140,7 @@ export function FeedbackPanel({ data }: { data: FeedbackSummary }) {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-border bg-background/40 px-3 py-2">
+    <div className="min-w-0 rounded-xl border border-border bg-base-0/50 px-3 py-2.5">
       <div className="text-[11px] uppercase tracking-wide text-muted">{label}</div>
       <div className="mt-0.5 text-lg font-semibold text-foreground">{value}</div>
     </div>

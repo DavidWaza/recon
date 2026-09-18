@@ -6,9 +6,9 @@ export const metadata = {
 
 export default function UnsubscribedPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-6">
-      <div className="w-full max-w-md rounded-2xl border border-white/[0.06] bg-white/[0.02] p-10 text-center backdrop-blur-sm">
-        <h1 className="text-2xl font-bold text-white">
+    <main className="flex min-h-dvh items-center justify-center bg-background px-4 py-10">
+      <div className="w-full max-w-md rounded-2xl border border-border bg-surface p-6 text-center shadow-card sm:p-10">
+        <h1 className="text-2xl font-bold text-foreground">
           You&apos;re unsubscribed
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-muted">
@@ -17,7 +17,7 @@ export default function UnsubscribedPage() {
         </p>
         <Link
           href="/#subscribe"
-          className="mt-8 inline-block rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-accent/25 transition-colors hover:bg-accent-hover"
+          className="mt-8 inline-block rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-foreground shadow-glow transition-colors hover:bg-accent-hover"
         >
           Resubscribe
         </Link>

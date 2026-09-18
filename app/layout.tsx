@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AdSenseScript } from "@/components/ads/AdSenseScript";
@@ -33,6 +33,16 @@ export const metadata: Metadata = {
   },
 };
 
+// viewport-fit=cover lets pb-safe/pt-safe read the iPhone notch and home-bar
+// insets; themeColor tints the mobile browser chrome to match the canvas.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#080b17",
+  colorScheme: "dark",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -40,7 +50,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full bg-background text-foreground">
+      <body className="min-h-dvh bg-background text-foreground">
         <AdSenseScript />
         <ToastProvider />
         {children}
